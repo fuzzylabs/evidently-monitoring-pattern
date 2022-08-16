@@ -1,1 +1,6 @@
 *~
+*.zip
+*.csv
+*.pkl
+env
+venv
