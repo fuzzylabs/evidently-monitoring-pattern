@@ -18,7 +18,7 @@ def setup_logger():
 
 def prepare_data():
     logging.info("Preparing data for train and test")
-    df = pd.read_csv('data\processed_house_data.csv', index_col='date')
+    df = pd.read_csv('data/processed_house_data.csv', index_col='date')
 
     target = 'price'
     prediction = 'predicted_price'
@@ -52,13 +52,13 @@ def evaluate(model):
     rmse = mean_squared_error(y_test, predictions, squared=False)
     r2 = r2_score(y_test, predictions)
 
-    print(f"Mean Squared Error: {mse}")
-    print(f"Mean Absolute Error: {mae}")
-    print(f"Root Mean Squared Error: {rmse}")
-    print(f"R-Squared: {r2}")
+    logging.info(f"Mean Squared Error: {mse}")
+    logging.info(f"Mean Absolute Error: {mae}")
+    logging.info(f"Root Mean Squared Error: {rmse}")
+    logging.info(f"R-Squared: {r2}")
 
 def save_model(model):
-    with open('pipeline\model.pkl','wb') as f:
+    with open('pipeline/model.pkl','wb') as f:
         pickle.dump(model, f)
 
 if __name__ == "__main__":

@@ -14,9 +14,9 @@ This repo is a complete demo of real-time model monitoring using Evidently. With
 
 1. **Create a new Python virtual environment and activate it**. For Linux/MacOS:
 ```bash
-pip install virtualenv
-virtualenv venv
+python3 -m venv env
 source venv/bin/activate 
+pip install -r requirements.txt
 ```
 2. **Get the `evidently-monitoring-demo` code example**:
 ```bash
