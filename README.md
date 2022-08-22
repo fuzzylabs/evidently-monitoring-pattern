@@ -74,3 +74,20 @@ curl -XPOST http://127.0.0.1:5000/predict -H 'Content-type: application/json' -d
 ```
 
 The server will return with a price, e.g. `100000`.
+
+
+## Run the metric server
+1. **Start the server**:
+
+```bash
+python monitoring_server/metric_server.py
+```
+
+2. **Test it by sending data to it**
+
+```bash
+python monitoring_server/send_data_to_server.py
+```
+
+- For now, the server will return a message saying "Data drift detected" when data drift is detected.
+- The data that are sending to the metric server using the send_data_to_server.py script are getting data from the datasets file. The dataset file contains a reference.csv and a production.csv which is used for testing and building the server. These two csv files are created using the split_data.py scipt within the data folder.

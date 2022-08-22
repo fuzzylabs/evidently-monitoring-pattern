@@ -58,7 +58,7 @@ def evaluate(model):
     logging.info(f"R-Squared: {r2}")
 
 def save_model(model):
-    with open('pipeline/model.pkl','wb') as f:
+    with open('models/model.pkl','wb') as f:
         pickle.dump(model, f)
 
 if __name__ == "__main__":
@@ -68,3 +68,4 @@ if __name__ == "__main__":
     train(model)
     evaluate(model)
     save_model(model)
+    
