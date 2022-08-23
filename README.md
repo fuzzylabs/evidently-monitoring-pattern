@@ -77,13 +77,19 @@ The server will return with a price, e.g. `100000`.
 
 
 ## Run the metric server
-1. **Start the server**:
+1. **Split the dataset into production and reference**:
 
 ```bash
 python monitoring_server/metric_server.py
 ```
 
-2. **Test it by sending data to it**
+2. **Start the server**:
+
+```bash
+python monitoring_server/metric_server.py
+```
+
+3. **Test it by sending data to it**
 
 ```bash
 python monitoring_server/send_data_to_server.py
