@@ -80,7 +80,7 @@ The server will return with a price, e.g. `100000`.
 1. **Split the dataset into production and reference**:
 
 ```bash
-python monitoring_server/metric_server.py
+python data/split_data.py
 ```
 
 2. **Start the server**:
