@@ -22,7 +22,7 @@ Within the repo, you will find:
 
 You'll need Python 3, and Docker plus Docker-compose.
 
-## Download and prepare data for the model
+## Getting started
 
 1. **Create a new Python virtual environment and activate it**. For Linux/MacOS:
 
@@ -31,7 +31,10 @@ python -m venv env
 source venv/bin/activate 
 pip install -r requirements.txt
 ```
-2. **Get and set up Kaggle API token**
+
+## Download data and prepare for the model
+
+1. **Get and set up Kaggle API token**
 
 - Go to [Kaggle](https://www.kaggle.com) to log in or create an account.
 - Get into your account settings page.
@@ -44,11 +47,20 @@ export set KAGGLE_USERNAME=<your-kaggle-username>
 export set KAGGLE_KEY=<your-kaggle-api-key>
 ```
 
-3. **Run the `get_data.py` script**:
+2. **Run the `get_data.py` script**:
 
 ```bash
 python data/get_data.py
 ```
+
+3. **Split the dataset into production and reference**:
+
+```bash
+python data/split_data.py
+```
+
+- To evaluate data drift or model's perfromance, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift or evaluate the regression performance.
+
 
 ## Train the house prices model
 
@@ -77,23 +89,27 @@ The server will return with a price, e.g. `100000`.
 
 
 ## Run the metric server
-1. **Split the dataset into production and reference**:
 
-```bash
-python data/split_data.py
-```
-
-2. **Start the server**:
+1. **Start the server**:
 
 ```bash
 python monitoring_server/metric_server.py
 ```
 
-3. **Test it by sending data to it**
+2. **Test it by sending data to it**
 
 ```bash
-python monitoring_server/send_data_to_server.py
+python scenarios/send_data_to_server.py
 ```
-
+- By default, the host is set to "127.0.0.1" and port 5000, this can be changed by parsing two arguments using the -H and -p flags:
+```bash
+python scenarios/send_data_to_server.py -H "127.0.0.1" -p "5000"
+```
 - For now, the server will return a message saying "Data drift detected" when data drift is detected.
 - The data that are sending to the metric server using the send_data_to_server.py script are getting data from the datasets file. The dataset file contains a reference.csv and a production.csv which is used for testing and building the server. These two csv files are created using the split_data.py scipt within the data folder.
+
+## Components of the demo
+
+- Training the regression model: The model is trained using the reference dataset which is split from the original dataset downloaded from Kaggle.
+- The inference server: This is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc..
+- The metric server: This is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and regression performance.

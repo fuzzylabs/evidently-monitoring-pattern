@@ -151,7 +151,7 @@ SERVICE: Optional[MonitoringService] = None
 @app.before_first_request
 def configure_service():
     global SERVICE
-    config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml") # This get path of the config.yaml file
+    config_file_path = "monitoring_server/config.yaml" # This get path of the config.yaml file
     #print(config_file_path)
 
     # Check if a config file exists?

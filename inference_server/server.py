@@ -16,29 +16,36 @@ def setup_logger():
         ]
     )
 
+
+@app.before_first_request
 def load_model():
-    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'models/model.pkl')
-    print(model_path)
+    global MODEL
+    model_path = "models/model.pkl"
+    logging.info(f"Loading model in path: {model_path}")
     with open(model_path, 'rb') as f:
-        model = pickle.load(f)
-    return model
+        MODEL = pickle.load(f)
+    logging.info(f"Model loaded")
+
 
 @app.route('/')
 def home():
     return "Hello world"
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
+    global MODEL
+
     logging.info(f"Received inference request {request.json}")
     request_data = request.json
     features = list(request_data.values())
     features = np.array(features)
     features = features.reshape(1, -1)
 
-    model = load_model()
-    pred = model.predict(features)
+    pred = MODEL.predict(features)
 
     return str(pred[0])
+
 
 if __name__ == "__main__":
     setup_logger()

@@ -1,23 +1,39 @@
 import numpy as np
 import pandas as pd
+import math
 import os
 
-dataset_dir = r'data\processed_house_data.csv'
 
-def data(dataset_dir):
-    raw = pd.read_csv(dataset_dir)
-    ref = raw[:10000]
-    pro = raw[10000:20001]
-    print(ref)
+def split_raw_dataset(raw_data_path):
+    '''
+    Parameters:
+    raw_data_path (str): path of the downloaded dataset from Kaggle.
 
-    datasets_path = "datasets\house_price_random_forest"
+    Load the dataset using pandas.
 
+    Split raw dataset with a 50/50 ratio. Save the split data as reference and production csv in a folder named "house_price_random_forest" within the datasets folder.
+    '''
+    raw_dataset = pd.read_csv(raw_data_path)
+    n_rows = len(raw_dataset) # Total number of rows in the raw dataset.
+    reference_data = raw_dataset[:math.floor(n_rows/2)] # Take the first 50% of the raw data.
+    production_data = raw_dataset[math.floor(n_rows/2):] # Take the remaining 50% of the raw data.
+    print(reference_data)
+    print(production_data)
+
+    # Set path to store the reference and production csvs.
+    datasets_path = "datasets/house_price_random_forest"
+
+    # Check if the path already exists
     if os.path.exists(datasets_path):
-        ref.to_csv(os.path.join(datasets_path, "reference.csv"), index=False)
-        pro.to_csv(os.path.join(datasets_path, "production.csv"), index=False)
+        reference_data.to_csv(os.path.join(datasets_path, "reference.csv"), index=False)
+        production_data.to_csv(os.path.join(datasets_path, "production.csv"), index=False)
     else:
-        os.makedirs("datasets\house_price_random_forest")
-        ref.to_csv(os.path.join(datasets_path, "reference.csv"), index=False)
-        pro.to_csv(os.path.join(datasets_path, "production.csv"), index=False)
-        
-data(dataset_dir)
+        # If the datasets folder does not exist, create new folder and store csvs.
+        os.makedirs("datasets/house_price_random_forest")
+        reference_data.to_csv(os.path.join(datasets_path, "reference.csv"), index=False)
+        production_data.to_csv(os.path.join(datasets_path, "production.csv"), index=False)
+
+
+if __name__ == "__main__":
+    raw_data_path = "data/processed_house_data.csv"
+    split_raw_dataset(raw_data_path)

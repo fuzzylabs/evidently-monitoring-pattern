@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import logging
 import pickle
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
@@ -17,9 +18,13 @@ def setup_logger():
     )
 
 def prepare_data():
+    data_path = "datasets/house_price_random_forest/reference.csv"
+    if not os.path.exists(data_path):
+        logging.error(f"Reference data does not exists in path: {data_path}")
+        exit("Failed to load data")
+    
     logging.info("Preparing data for train and test")
-    df = pd.read_csv('data/processed_house_data.csv', index_col='date')
-
+    df = pd.read_csv(data_path, index_col='date')
     target = 'price'
     prediction = 'predicted_price'
     datetime = 'date'
