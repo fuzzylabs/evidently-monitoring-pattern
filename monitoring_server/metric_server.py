@@ -22,9 +22,11 @@ from prometheus_client import Gauge
 from evidently.runner.loader import DataLoader # Basically pd.read_csv()
 from evidently.runner.loader import DataOptions # Set a column for date, header and separtor etc...
 
+
 app = Flask(__name__)
 
-def setup_logger():
+
+def setup_logger() -> None:
     logging.basicConfig(
         level=logging.INFO, 
         format="%(asctime)s [%(levelname)s] %(message)s",
@@ -32,6 +34,7 @@ def setup_logger():
             logging.StreamHandler()
         ]
     )
+
 
 @dataclass
 class MonitoringServiceOptions:
@@ -42,6 +45,7 @@ class MonitoringServiceOptions:
     window_size: int
     calculation_period_sec: int
 
+
 @dataclass
 class LoadedDataset: # Stores the dataset config once loaded
     name: str
@@ -49,12 +53,17 @@ class LoadedDataset: # Stores the dataset config once loaded
     monitors: List[str]
     column_mapping: ColumnMapping
 
+
 EVIDENTLY_MONITORS_MAPPING = {
     "data_drift": DataDriftMonitor,
     # "regression_performance": RegressionPerformanceMonitor
 }
 
+
 class MonitoringService:
+    '''
+    This class defines the the monitoring service object which is use to listen to data sent by the inference server.
+    '''
     #datasets: List[str] # A list of dataset to monitor, dont think its needed
     metric: Dict[str, Gauge] # ??
     #last_run: Optional[datetime.datetime] # ?? Not needed?
@@ -64,7 +73,7 @@ class MonitoringService:
     #calculation_period_sec: float #
     window_size: int #
 
-    def __init__(self, datasets: Dict[str, LoadedDataset], window_size = int, calculation_period_sec = float):
+    def __init__(self, datasets: Dict[str, LoadedDataset], window_size: int, calculation_period_sec: float):
         self.reference = {}
         self.current = {}
         self.monitoring = {}
@@ -85,7 +94,7 @@ class MonitoringService:
         window_size = self.window_size
 
         if dataset_name in self.current: # Check if have recevied data before
-            current_data = self.current[dataset_name].append(new_rows, ignore_index = True)
+            current_data = pd.concat([self.current[dataset_name], new_rows], ignore_index = True)
         else: # If first time receive data
             current_data = new_rows
 
@@ -146,13 +155,14 @@ class MonitoringService:
 
             ## STOPPED HERE LAST TIME, CONTINUE FROM HERE NEXT TIME
 
+
 SERVICE: Optional[MonitoringService] = None
 
+
 @app.before_first_request
-def configure_service():
+def configure_service() -> None:
     global SERVICE
     config_file_path = "monitoring_server/config.yaml" # This get path of the config.yaml file
-    #print(config_file_path)
 
     # Check if a config file exists?
     if not os.path.exists(config_file_path): # Will return false if not exists
@@ -167,9 +177,7 @@ def configure_service():
     monitoring_service_options =  MonitoringServiceOptions(**configs["service"]) # Init with config file, ** = dict unpack
 
     # Load and set up reference dataset
-    # datasets_path = os.path.abspath(monitoring_service_options.datasets_path) ## Weird, this works when run using vscode
-    datasets_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), monitoring_service_options.datasets_path)
-    #print(datasets_path)
+    datasets_path = monitoring_service_options.datasets_path
     data_loader = DataLoader()
 
     datasets = {}
@@ -189,7 +197,6 @@ def configure_service():
                 ),            
             )
 
-            #print(dataset_configs["column_mapping"].get("datetime", None))
             datasets[dataset_name] = LoadedDataset(
                 name = dataset_name,
                 references = reference_data,
@@ -204,12 +211,17 @@ def configure_service():
 
     SERVICE = MonitoringService(datasets = datasets, window_size = monitoring_service_options.window_size, calculation_period_sec = monitoring_service_options.calculation_period_sec)
 
+
 @app.route('/')
-def home():
+def home() -> None:
     return "Hello world"
 
+
 @app.route("/iterate/<dataset>", methods=["POST"])
-def iterate(dataset: str):
+def iterate(dataset: str) -> None:
+    '''
+    Get the data from the inference server and call the iterate method from a MonitoringService object.
+    '''
     item = request.json
 
     global SERVICE
@@ -219,6 +231,7 @@ def iterate(dataset: str):
     SERVICE.iterate(dataset_name=dataset, new_rows=pd.DataFrame.from_dict(item))
     return "ok"
 
+
 if __name__ == "__main__":
     setup_logger()
-    app.run(debug=True)
+    app.run(debug = True)

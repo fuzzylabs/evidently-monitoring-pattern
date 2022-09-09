@@ -4,7 +4,7 @@ import math
 import os
 
 
-def split_raw_dataset(raw_data_path):
+def split_raw_dataset(raw_data_path: str) -> None:
     '''
     Parameters:
     raw_data_path (str): path of the downloaded dataset from Kaggle.
@@ -17,6 +17,7 @@ def split_raw_dataset(raw_data_path):
     n_rows = len(raw_dataset) # Total number of rows in the raw dataset.
     reference_data = raw_dataset[:math.floor(n_rows/2)] # Take the first 50% of the raw data.
     production_data = raw_dataset[math.floor(n_rows/2):] # Take the remaining 50% of the raw data.
+    production_data = raw_dataset.drop(["price"], axis = 1) # Drop the price column.
     print(reference_data)
     print(production_data)
 

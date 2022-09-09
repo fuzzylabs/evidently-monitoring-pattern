@@ -28,7 +28,7 @@ You'll need Python 3, and Docker plus Docker-compose.
 
 ```bash
 python -m venv env
-source venv/bin/activate 
+source env/bin/activate 
 pip install -r requirements.txt
 ```
 
@@ -59,8 +59,7 @@ python data/get_data.py
 python data/split_data.py
 ```
 
-- To evaluate data drift or model's perfromance, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift or evaluate the regression performance.
-
+- To evaluate data drift or model's perfromance, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift or evaluate the regression performance. The production dataset does not include the price column as the price will be predicted by the regression model.
 
 ## Train the house prices model
 
@@ -76,13 +75,13 @@ python pipeline/train.py
 1. **Start the server**:
 
 ```bash
-python inference_server/server.py
+python model_server/inference_server.py
 ```
 
 2. **Test it using Curl**
 
 ```bash
-curl -XPOST http://127.0.0.1:5000/predict -H 'Content-type: application/json' -d '{"bedrooms": 1, "bathrooms": 1, "sqft_living": 50, "sqft_lot": 50, "floors": 1, "waterfront": 0, "view": 0, "condition": 0, "grade": 0, "yr_built": 1960}'
+curl -XPOST http://127.0.0.1:5050/predict -w '\n' -H 'Content-type: application/json' -d '{"bedrooms": 1, "bathrooms": 1, "sqft_living": 50, "sqft_lot": 50, "floors": 1, "waterfront": 0, "view": 0, "condition": 0, "grade": 0, "yr_built": 1960}'
 ```
 
 The server will return with a price, e.g. `100000`.
@@ -101,15 +100,15 @@ python monitoring_server/metric_server.py
 ```bash
 python scenarios/send_data_to_server.py
 ```
-- By default, the host is set to "127.0.0.1" and port 5000, this can be changed by parsing two arguments using the -H and -p flags:
+- By default, the host is set to "127.0.0.1" and port 5000, this can be changed by passing two arguments using the -H and -p flags:
 ```bash
 python scenarios/send_data_to_server.py -H "127.0.0.1" -p "5000"
 ```
 - For now, the server will return a message saying "Data drift detected" when data drift is detected.
-- The data that are sending to the metric server using the send_data_to_server.py script are getting data from the datasets file. The dataset file contains a reference.csv and a production.csv which is used for testing and building the server. These two csv files are created using the split_data.py scipt within the data folder.
+- The data that are sending to the metric server are the predictions output by the regression model together with the features used for the predictions. This is done by the inference server and not the scenarios' script.
 
 ## Components of the demo
 
 - Training the regression model: The model is trained using the reference dataset which is split from the original dataset downloaded from Kaggle.
-- The inference server: This is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc..
+- The inference server: This is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 - The metric server: This is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and regression performance.
