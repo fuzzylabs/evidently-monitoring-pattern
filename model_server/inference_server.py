@@ -56,7 +56,7 @@ def load_model():
 
 @app.route('/')
 def home() -> str:
-    return "Hello world"
+    return "Hello world from the inference server."
 
 
 @app.route('/predict', methods=['POST'])
@@ -76,34 +76,35 @@ def predict() -> str:
     features = features.reshape(1, -1)
 
     pred = MODEL.predict(features)
+    pred_price = pred[0]
 
-    logging.info(f"The predicted prices is: {pred[0]}")
+    logging.info(f"The predicted prices is: {pred_price}")
+    send_pred_to_metric_server(pred_price)
     return str(pred[0])
 
 
-@app.after_request
-def send_pred_to_metric_server(response):
+def send_pred_to_metric_server(pred_price) -> None:
     '''
     This function sends the predictions made by the model together with the features are used to make the predictions to the metric server.
     '''
     request_features = request.get_json()
-    pred_price = response.get_data(as_text = True)
     pred_price = {"price": float(pred_price)}
     features_n_pred = request_features | pred_price
 
-    metric_server_url = "http://127.0.0.1:5000/iterate/house_price_random_forest"
+    # metric_server_url = "http://evidently_service:8085/iterate/house_price_random_forest"
+    metric_server_url = "http://127.0.0.1:8085/iterate/house_price_random_forest"
     logging.info(f"Sending predictions to metric server.")
     try:
-        r = requests.post(
+        response = requests.post(
             metric_server_url, 
             data = json.dumps([features_n_pred], cls = NumpyEncoder), 
             headers = {"content-type": "application/json"})
 
         if response.status_code == 200:
-            print(f"Success.")
+            logging.info(f"Success.")
 
         else:
-            print(
+            logging.Error(
                 f"Got an error code {response.status_code} for the data chunk. "
                 f"Reason: {response.reason}, error text: {response.text}"
             )
@@ -111,10 +112,8 @@ def send_pred_to_metric_server(response):
     except requests.exceptions.ConnectionError as e:
         logging.error(f"Cannot reach the metric server")
 
-    return response
-
 
 if __name__ == "__main__":
     setup_logger()
     MODEL = load_model()
-    app.run(port = "5050", debug = True)
+    app.run(host = "0.0.0.0", port = "5050", debug = True)

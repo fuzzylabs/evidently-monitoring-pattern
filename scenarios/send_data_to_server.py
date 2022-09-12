@@ -70,7 +70,7 @@ if __name__ == "__main__":
         "-p",
         "--port",
         type = str,
-        default = "5000",
+        default = "5050",
         help = "Port of host"
     )
 

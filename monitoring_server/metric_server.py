@@ -1,3 +1,5 @@
+import hashlib
+
 import os
 import logging
 from dataclasses import dataclass # Automatically adding generated special methods such as __init__() and __repr__().
@@ -7,10 +9,12 @@ from typing import Dict # NOTE Type hinting is deprecate after python 3.9, used 
 from typing import List
 from typing import Optional
 
+import flask
+import prometheus_client
 from flask import Flask, request
-import numpy as np
 import pandas as pd
 import yaml
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from evidently.pipeline.column_mapping import ColumnMapping
 from evidently.model_monitoring import DataDriftMonitor
@@ -36,6 +40,10 @@ def setup_logger() -> None:
     )
 
 
+# Add prometheus wsgi middleware to route /metrics requests
+app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/metrics": prometheus_client.make_wsgi_app()})
+
+
 @dataclass
 class MonitoringServiceOptions:
     datasets_path: str
@@ -55,8 +63,7 @@ class LoadedDataset: # Stores the dataset config once loaded
 
 
 EVIDENTLY_MONITORS_MAPPING = {
-    "data_drift": DataDriftMonitor,
-    # "regression_performance": RegressionPerformanceMonitor
+    "data_drift": DataDriftMonitor
 }
 
 
@@ -65,7 +72,7 @@ class MonitoringService:
     This class defines the the monitoring service object which is use to listen to data sent by the inference server.
     '''
     #datasets: List[str] # A list of dataset to monitor, dont think its needed
-    metric: Dict[str, Gauge] # ??
+    metric: Dict[str, prometheus_client.Gauge]
     #last_run: Optional[datetime.datetime] # ?? Not needed?
     reference: Dict[str, pd.DataFrame] #
     current: Dict[str, Optional[pd.DataFrame]] #
@@ -79,18 +86,28 @@ class MonitoringService:
         self.monitoring = {}
         self.column_mapping = {}
         self.window_size = window_size
-        self.metrics = {}
-        self.next_run_time = {}
         self.calculation_period_sec = calculation_period_sec
 
         for dataset_info in datasets.values():
-            self.reference[dataset_info.name] = dataset_info.references
+            bedroom_only = dataset_info.references[['bedrooms']]
+            # self.reference[dataset_info.name] = dataset_info.references
+            self.reference[dataset_info.name] = bedroom_only
             self.monitoring[dataset_info.name] = ModelMonitoring(
                 monitors = [EVIDENTLY_MONITORS_MAPPING[monitor]() for monitor in dataset_info.monitors]
             )
             self.column_mapping[dataset_info.name] = dataset_info.column_mapping
 
+        # print(self.reference['house_price_random_forest']['bedrooms'])
+        
+        self.metrics = {}
+        self.next_run_time = {}
+        self.hash = hashlib.sha256(pd.util.hash_pandas_object(self.reference["house_price_random_forest"]).values).hexdigest()
+        self.hash_metric = prometheus_client.Gauge("Evidently:reference_dataset_hash", "", labelnames=["hash"])
+
     def iterate(self, dataset_name: str, new_rows: pd.DataFrame):
+        # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column as we only care about features drift for now.
+        new_rows = new_rows[['bedrooms']]
+        print(new_rows)
         window_size = self.window_size
 
         if dataset_name in self.current: # Check if have recevied data before
@@ -105,6 +122,8 @@ class MonitoringService:
             current_data.reset_index(drop = True, inplace = True)
         
         self.current[dataset_name] = current_data
+
+        #print(self.current[dataset_name])
         
         if current_size < window_size:
             logging.info(f"Currenlty has less data than set window size: {current_size} of {window_size}, waiting for more data")
@@ -119,12 +138,16 @@ class MonitoringService:
         self.next_run_time[dataset_name] = datetime.now() + timedelta(
             seconds = self.calculation_period_sec               
         )
+
         self.monitoring[dataset_name].execute(
             self.reference[dataset_name], current_data, self.column_mapping[dataset_name]
         ) # The exectue method inherits from the Pipeline class
 
+        self.hash_metric.labels(hash=self.hash).set(1)
+
         for metric, value, labels in self.monitoring[dataset_name].metrics():
             metric_key = f"Evidently:{metric.name}"
+            #logging.info(metric_key)
             found = self.metrics.get(metric_key)
 
             if not labels:
@@ -150,8 +173,8 @@ class MonitoringService:
             # print(value)
             # print(labels)
 
-            if metric.name == "data_drift:dataset_drift" and value == True:
-                print("Data drift detected")
+            # if metric.name == "data_drift:dataset_drift" and value == True:
+            #     print("Data drift detected")
 
             ## STOPPED HERE LAST TIME, CONTINUE FROM HERE NEXT TIME
 
@@ -214,7 +237,7 @@ def configure_service() -> None:
 
 @app.route('/')
 def home() -> None:
-    return "Hello world"
+    return "Hello world from the metric server."
 
 
 @app.route("/iterate/<dataset>", methods=["POST"])
@@ -234,4 +257,4 @@ def iterate(dataset: str) -> None:
 
 if __name__ == "__main__":
     setup_logger()
-    app.run(debug = True)
+    app.run(host = "0.0.0.0", port = "8085", debug = True)
