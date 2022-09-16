@@ -1,6 +1,7 @@
 import os
 import logging
 import subprocess
+import time
 
 
 def setup_logger() -> None:
@@ -45,7 +46,7 @@ def run_script(cmd: list, wait: bool) -> None:
 
 
 def send_data_to_model_server():
-    os.system("python scenarios/send_data_to_server.py")
+    os.system("python scenarios/drift.py")
 
 
 def stop_docker_compose():
@@ -53,9 +54,9 @@ def stop_docker_compose():
 
 
 if __name__ == "__main__":
-    
     setup_logger()
     check_docker_installation()
     check_dataset()
     run_docker_compose()
+    time.sleep(5)
     send_data_to_model_server()

@@ -56,10 +56,10 @@ python data/get_data.py
 3. **Split the dataset into production and reference**:
 
 ```bash
-python data/split_data.py
+python data/generate_dataset_for_demo.py
 ```
 
-- To evaluate data drift or model's perfromance, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift or evaluate the regression performance. The production dataset does not include the price column as the price will be predicted by the regression model.
+- To evaluate data drift or model's perfromance, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift or evaluate the regression performance. The production dataset does not include the price column as the price will be predicted by the regression model. The scripts will create two scenarios of production data, one with data drift and one without.
 
 ## Train the house prices model
 

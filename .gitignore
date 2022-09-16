@@ -4,3 +4,5 @@
 *.pkl
 datasets
 env
+.DS_Store
+*.ipynb

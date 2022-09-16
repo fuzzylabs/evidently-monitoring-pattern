@@ -1,11 +1,8 @@
-import os
 import logging
 import argparse
 import json
 import time
-from typing import Dict
 
-import numpy as np
 import pandas as pd
 import requests
 
@@ -25,7 +22,8 @@ def request_prediction(sleep_timeout: int) -> None:
     Send an instance from the production.csv to the inference server after each sleep time out.
     '''
     model_server_url = "http://127.0.0.1:5050/predict"
-    dataset_path = "datasets/house_price_random_forest/production.csv"
+    # model_server_url = "http://inference_service:5050/predict"
+    dataset_path = "datasets/house_price_random_forest/production_no_drift.csv"
 
     dataset = pd.read_csv(dataset_path)
 

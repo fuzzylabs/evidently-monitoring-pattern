@@ -18,7 +18,6 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from evidently.pipeline.column_mapping import ColumnMapping
 from evidently.model_monitoring import DataDriftMonitor
-from evidently.model_monitoring import RegressionPerformanceMonitor
 from evidently.model_monitoring import ModelMonitoring # Specify monitors to use and return specific metrics of monitors
 
 from prometheus_client import Gauge
@@ -107,7 +106,7 @@ class MonitoringService:
     def iterate(self, dataset_name: str, new_rows: pd.DataFrame):
         # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column as we only care about features drift for now.
         new_rows = new_rows[['bedrooms']]
-        print(new_rows)
+        logging.info(new_rows)
         window_size = self.window_size
 
         if dataset_name in self.current: # Check if have recevied data before
@@ -173,8 +172,8 @@ class MonitoringService:
             # print(value)
             # print(labels)
 
-            # if metric.name == "data_drift:dataset_drift" and value == True:
-            #     print("Data drift detected")
+            if metric.name == "data_drift:dataset_drift" and value == True:
+                logging.info("Data drift detected")
 
             ## STOPPED HERE LAST TIME, CONTINUE FROM HERE NEXT TIME
 
@@ -185,7 +184,7 @@ SERVICE: Optional[MonitoringService] = None
 @app.before_first_request
 def configure_service() -> None:
     global SERVICE
-    config_file_path = "monitoring_server/config.yaml" # This get path of the config.yaml file
+    config_file_path = "config.yaml" # This get path of the config.yaml file
 
     # Check if a config file exists?
     if not os.path.exists(config_file_path): # Will return false if not exists
