@@ -8,11 +8,11 @@ This repo is a complete demo of real-time model monitoring using Evidently. Usin
 
 Within the repo, you will find:
 
-* `data`: contains a script to download a training dataset; the data is also saved to this directory.
+* `data`: contains a script to download a training dataset; the data is also saved to this directory. A script to generate the production and reference dataset for evidently to monitor data drift and outliers.
 * `pipeline`: a model training script which will use the data to create a simple model.
 * `inference_server`: a model server that exposes our house price model through a REST API.
-* `monitoring_server`: An Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as drift.
-* `scenarios`: some scripts that simulate different scenarios: e.g. model drift vs normal input.
+* `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as drift.
+* `scenarios`: some scripts that simulate different scenarios: e.g. model drift vs normal (no drift) input.
 * A monitoring dashboard which uses Prometheus and Grafana to visualise in real-time the monitoring metrics.
 * A Docker Compose file to run the whole thing.
 
@@ -27,7 +27,7 @@ You'll need Python 3, and Docker plus Docker-compose.
 1. **Create a new Python virtual environment and activate it**. For Linux/MacOS:
 
 ```bash
-python -m venv env
+python3 -m venv env
 source env/bin/activate 
 pip install -r requirements.txt
 ```
@@ -59,7 +59,7 @@ python data/get_data.py
 python data/generate_dataset_for_demo.py
 ```
 
-- To evaluate data drift or model's perfromance, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift or evaluate the regression performance. The production dataset does not include the price column as the price will be predicted by the regression model. The scripts will create two scenarios of production data, one with data drift and one without.
+- To monitor data drift or outliers, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift and detect outliers. The production dataset does not include the price column as the price will be predicted by the regression model. The scripts will create two scenarios of production data, one with data drift and one without.
 
 ## Train the house prices model
 
@@ -70,45 +70,42 @@ python pipeline/train.py
 ```
 - Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
 
-## Run the model server
+## Running the demo
 
-1. **Start the server**:
-
-```bash
-python model_server/inference_server.py
-```
-
-2. **Test it using Curl**
+- **To run the demo with a scenario with no data drift**:
 
 ```bash
-curl -XPOST http://127.0.0.1:5050/predict -w '\n' -H 'Content-type: application/json' -d '{"bedrooms": 1, "bathrooms": 1, "sqft_living": 50, "sqft_lot": 50, "floors": 1, "waterfront": 0, "view": 0, "condition": 0, "grade": 0, "yr_built": 1960}'
+python run_demo_no_drift.py
 ```
 
-The server will return with a price, e.g. `100000`.
+OR
 
-
-## Run the metric server
-
-1. **Start the server**:
+- **To run the demo with a scenario with no drift**:
 
 ```bash
-python monitoring_server/metric_server.py
+python run_demo_drift.py
 ```
 
-2. **Test it by sending data to it**
+Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitor by the Evidently metric server.
+
+The metric server will receive the price prediction along with the features used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
+
+The metrics produced by Evidently will be logged to Promethus's database which will be available at port 9090. To access Prometheus web interface, go to your browser and open: (http://localhost:9090/).
+
+To visualise these metrics, Grafana is connected to Promethus's database to collect data for the dashboard. Grafana will be available at port 3030. To access Grafana web interface, go to your browser and open: (http://localhost:3000/)
+
+To stop the demo, press ctrl+c and shut down docker compose by running the following command:
 
 ```bash
-python scenarios/send_data_to_server.py
+docker compose down
 ```
-- By default, the host is set to "127.0.0.1" and port 5000, this can be changed by passing two arguments using the -H and -p flags:
-```bash
-python scenarios/send_data_to_server.py -H "127.0.0.1" -p "5000"
-```
-- For now, the server will return a message saying "Data drift detected" when data drift is detected.
-- The data that are sending to the metric server are the predictions output by the regression model together with the features used for the predictions. This is done by the inference server and not the scenarios' script.
 
 ## Components of the demo
 
 - Training the regression model: The model is trained using the reference dataset which is split from the original dataset downloaded from Kaggle.
+
 - The inference server: This is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
-- The metric server: This is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and regression performance.
+
+- The metric server: This is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and outliers.
+
+- Once these metrics has been produced by Evidently, they will be logged to the Promethus's database and can be visualised using Grafana.

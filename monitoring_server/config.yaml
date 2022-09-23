@@ -22,7 +22,6 @@ datasets:
       - data_drift
 service:
   datasets_path: datasets
-  min_reference_size: 100
   use_reference: true
   moving_reference: false
   window_size: 5

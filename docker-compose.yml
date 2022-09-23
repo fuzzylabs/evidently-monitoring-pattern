@@ -43,6 +43,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-admin-api'
     ports:
       - "9090:9090"
     networks:

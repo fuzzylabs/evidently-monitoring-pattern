@@ -5,11 +5,6 @@ import logging
 from dataclasses import dataclass # Automatically adding generated special methods such as __init__() and __repr__().
 from datetime import datetime, timedelta
 
-from typing import Dict # NOTE Type hinting is deprecate after python 3.9, used for init variable without specifying its values
-from typing import List
-from typing import Optional
-
-import flask
 import prometheus_client
 from flask import Flask, request
 import pandas as pd
@@ -46,7 +41,6 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/metrics": prometheus_client
 @dataclass
 class MonitoringServiceOptions:
     datasets_path: str
-    min_reference_size: int
     use_reference: bool
     moving_reference: bool
     window_size: int
@@ -57,7 +51,7 @@ class MonitoringServiceOptions:
 class LoadedDataset: # Stores the dataset config once loaded
     name: str
     references: pd.DataFrame
-    monitors: List[str]
+    monitors: list[str]
     column_mapping: ColumnMapping
 
 
@@ -70,16 +64,13 @@ class MonitoringService:
     '''
     This class defines the the monitoring service object which is use to listen to data sent by the inference server.
     '''
-    #datasets: List[str] # A list of dataset to monitor, dont think its needed
-    metric: Dict[str, prometheus_client.Gauge]
-    #last_run: Optional[datetime.datetime] # ?? Not needed?
-    reference: Dict[str, pd.DataFrame] #
-    current: Dict[str, Optional[pd.DataFrame]] #
-    monitoring: Dict[str, ModelMonitoring] #
-    #calculation_period_sec: float #
+    metric: dict[str, prometheus_client.Gauge]
+    reference: dict[str, pd.DataFrame]
+    current: dict[str, pd.DataFrame | None]
+    monitoring: dict[str, ModelMonitoring]
     window_size: int #
 
-    def __init__(self, datasets: Dict[str, LoadedDataset], window_size: int, calculation_period_sec: float):
+    def __init__(self, datasets: dict[str, LoadedDataset], window_size: int, calculation_period_sec: float):
         self.reference = {}
         self.current = {}
         self.monitoring = {}
@@ -104,8 +95,8 @@ class MonitoringService:
         self.hash_metric = prometheus_client.Gauge("Evidently:reference_dataset_hash", "", labelnames=["hash"])
 
     def iterate(self, dataset_name: str, new_rows: pd.DataFrame):
-        # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column as we only care about features drift for now.
-        new_rows = new_rows[['bedrooms']]
+        # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column if we only care about features drift for now.
+        new_rows = new_rows[['bedrooms']] # We only want the bedroom feature for now
         logging.info(new_rows)
         window_size = self.window_size
 
@@ -121,8 +112,6 @@ class MonitoringService:
             current_data.reset_index(drop = True, inplace = True)
         
         self.current[dataset_name] = current_data
-
-        #print(self.current[dataset_name])
         
         if current_size < window_size:
             logging.info(f"Currenlty has less data than set window size: {current_size} of {window_size}, waiting for more data")
@@ -167,18 +156,12 @@ class MonitoringService:
             except ValueError as error:
                 # ignore errors sending other metrics
                 logging.error("Value error for metric %s, error: ", metric_key, error)
-            
-            # print(metric.name)
-            # print(value)
-            # print(labels)
 
             if metric.name == "data_drift:dataset_drift" and value == True:
                 logging.info("Data drift detected")
 
-            ## STOPPED HERE LAST TIME, CONTINUE FROM HERE NEXT TIME
 
-
-SERVICE: Optional[MonitoringService] = None
+SERVICE: MonitoringService | None = None
 
 
 @app.before_first_request
@@ -193,8 +176,7 @@ def configure_service() -> None:
     
     # If config file found
     with open(config_file_path, "rb") as config_file:
-        configs = yaml.safe_load(config_file) # A dict
-        #print(configs['service'])
+        configs = yaml.safe_load(config_file)
     
     monitoring_service_options =  MonitoringServiceOptions(**configs["service"]) # Init with config file, ** = dict unpack
 

@@ -6,6 +6,7 @@ import pandas as pd
 
 from kaggle.api.kaggle_api_extended import KaggleApi
 
+
 def setup_logger() -> None:
     logging.basicConfig(
         level=logging.INFO, 
@@ -14,6 +15,7 @@ def setup_logger() -> None:
             logging.StreamHandler()
         ]
     )
+
 
 def authenticate_api() -> KaggleApi():
     '''
@@ -26,6 +28,7 @@ def authenticate_api() -> KaggleApi():
     api.authenticate()
     logging.info("Keys authenticated")
     return api
+
 
 def download_dataset(api: KaggleApi()) -> None:
     '''

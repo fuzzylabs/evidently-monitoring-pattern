@@ -5,4 +5,4 @@
 datasets
 env
 .DS_Store
-*.ipynb
+.ipynb

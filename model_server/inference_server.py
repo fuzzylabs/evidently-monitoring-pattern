@@ -59,7 +59,7 @@ def home() -> str:
     return "Hello world from the inference server."
 
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=['POST'])
 def predict() -> str:
     '''
     Process the JSON payload and select features that can be used by the model to make predictions.
@@ -92,7 +92,7 @@ def send_pred_to_metric_server(pred_price) -> None:
     features_n_pred = request_features | pred_price
 
     metric_server_url = "http://evidently_service:8085/iterate/house_price_random_forest"
-    # metric_server_url = "http://127.0.0.1:8085/iterate/house_price_random_forest"
+
     logging.info(f"Sending predictions to metric server.")
     try:
         response = requests.post(
