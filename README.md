@@ -109,3 +109,7 @@ docker compose down
 - The metric server: This is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and outliers.
 
 - Once these metrics has been produced by Evidently, they will be logged to the Promethus's database and can be visualised using Grafana.
+
+- When the no data drift scneario is running, the Grafana's dashboard should show no data drift is detected. However, as there are some randomness in dataset generation, it is normal to see data drift every once a while.
+
+- When the data drift scneratio is running, Grafana's dashboard should show data drift at a constant time frame, e.g. no data drfit for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
