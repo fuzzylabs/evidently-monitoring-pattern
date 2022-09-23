@@ -80,7 +80,7 @@ python run_demo_no_drift.py
 
 OR
 
-- **To run the demo with a scenario with no drift**:
+- **To run the demo with a scenario with data drift**:
 
 ```bash
 python run_demo_drift.py
