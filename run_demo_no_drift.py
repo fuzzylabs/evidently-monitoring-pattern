@@ -40,7 +40,7 @@ def run_docker_compose():
     Run all containers using docker compose.
     '''
     logging.info("Running docker compose")
-    run_script(cmd=["docker", "compose", "up", "-d"], wait=True)
+    run_script(cmd=["docker-compose", "up", "-d"], wait=True)
 
 
 def run_script(cmd: list, wait: bool) -> None:

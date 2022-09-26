@@ -32,12 +32,25 @@ class ProbDistribution:
     This class generate a value using the distribution of the reference data.
     '''
     def __init__(self, dist: dict):
-        self.dist = dist
-        self.no_bedrooms = list(dist.keys())
-        self.bedrooms_dist = list(dist.values())
+        self.no_items = list(dist.keys())
+        self.items_dist = list(dist.values())
+        self.shuffled_dist = self.skew_dist(self.items_dist)
+        
+        print(self.no_items)
+        print(self.items_dist)
+        print(self.shuffled_dist)
+    
+    def skew_dist(self, items_dist: list):
+        min_dist_idx = items_dist.index(min(items_dist))
+        shuffled_dist = [0 for x in range(len(items_dist))]
+        shuffled_dist[min_dist_idx] = 1.0
+        return shuffled_dist
 
-    def generate_val(self) -> float:
-        val = np.random.choice(self.no_bedrooms, p=self.bedrooms_dist)
+    def generate_val(self, shuffle_dist: bool = False) -> float:
+        if shuffle_dist == False:
+            val = np.random.choice(self.no_items, p=self.items_dist)
+        elif shuffle_dist == True:
+            val = np.random.choice(self.no_items, p=self.shuffled_dist)
         return val
 
 
@@ -84,10 +97,10 @@ if __name__ == "__main__":
 
     for index, row in production_df.iterrows():
         if counter < 10:
-            production_df.at[index, "bedrooms"] = feature_generator.generate_val()
+            production_df.at[index, "bedrooms"] = feature_generator.generate_val(shuffle_dist=False)
             counter += 1
         elif counter >= 10 and counter < 15:
-            production_df.at[index, "bedrooms"] = random.randint(max_beds, max_beds * 10)
+            production_df.at[index, "bedrooms"] = feature_generator.generate_val(shuffle_dist=True)
             counter += 1
         elif counter == 15:
             counter = 0
@@ -98,7 +111,7 @@ if __name__ == "__main__":
     production_df.to_csv(os.path.join(save_path, "production_with_drift.csv"), index=False)
 
     for index, row in production_df.iterrows():
-        production_df.at[index, "bedrooms"] = feature_generator.generate_val()
+        production_df.at[index, "bedrooms"] = feature_generator.generate_val(shuffle_dist=False)
             
     production_df.to_csv(os.path.join(save_path, "production_no_drift.csv"), index=False) 
 
