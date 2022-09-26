@@ -8,8 +8,8 @@ This repo is a complete demo of real-time model monitoring using Evidently. Usin
 
 Within the repo, you will find:
 
-* `data`: contains a script to download a training dataset; the data is also saved to this directory. A script to generate the production and reference dataset for evidently to monitor data drift and outliers.
-* `pipeline`: a model training script which will use the data to create a simple model.
+* `data`: contains a script to download a training dataset; the data is also saved to this directory. A script to generate the production and reference dataset for evidently to monitor data drift and outliers. The reference and production dataset will be saved to a new directory named `datasets`.
+* `pipeline`: a model training script which will use the data to create and train a simple model.
 * `inference_server`: a model server that exposes our house price model through a REST API.
 * `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as drift.
 * `scenarios`: some scripts that simulate different scenarios: e.g. model drift vs normal (no drift) input.
@@ -72,7 +72,9 @@ python pipeline/train.py
 
 ## Running the demo
 
-- **To run the demo with a scenario with no data drift**:
+**At the moment, there are two scenarios we can simulate by running the demo:**
+
+- **Scenario 1: No data drift**:
 
 ```bash
 python run_demo_no_drift.py
@@ -80,7 +82,7 @@ python run_demo_no_drift.py
 
 OR
 
-- **To run the demo with a scenario with data drift**:
+- **Scenario 2: Data drift**:
 
 ```bash
 python run_demo_drift.py
@@ -88,7 +90,7 @@ python run_demo_drift.py
 
 Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitor by the Evidently metric server.
 
-The metric server will receive the price prediction along with the features used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
+The metric server will receive the price prediction along with the features (model inputs) used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
 
 The metrics produced by Evidently will be logged to Promethus's database which will be available at port 9090. To access Prometheus web interface, go to your browser and open: http://localhost:9090/
 
@@ -108,7 +110,7 @@ docker compose down
 
 - The metric server: This is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and outliers.
 
-- Once these metrics has been produced by Evidently, they will be logged to the Promethus's database and can be visualised using Grafana.
+- Grafana & Prometheus: Once these metrics has been produced by Evidently, they will be logged to the Promethus's database and can be visualised using Grafana.
 
 - When the no data drift scneario is running, the Grafana's dashboard should show no data drift is detected. However, as there are some randomness in dataset generation, it is normal to see data drift every once a while.
 
