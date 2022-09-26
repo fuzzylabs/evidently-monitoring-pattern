@@ -74,7 +74,7 @@ python pipeline/train.py
 
 **At the moment, there are two scenarios we can simulate by running the demo:**
 
-- **Scenario 1: No data drift**:
+- **Scenario 1: No data drift**
 
 ```bash
 python run_demo_no_drift.py
@@ -82,7 +82,7 @@ python run_demo_no_drift.py
 
 OR
 
-- **Scenario 2: Data drift**:
+- **Scenario 2: Data drift**
 
 ```bash
 python run_demo_drift.py
