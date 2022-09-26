@@ -62,7 +62,7 @@ def send_data_to_model_server():
 
 
 def stop_docker_compose():
-    os.system("docker compose down")
+    os.system("docker-compose down")
 
 
 if __name__ == "__main__":

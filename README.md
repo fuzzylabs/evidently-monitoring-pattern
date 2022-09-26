@@ -107,13 +107,13 @@ OR
 python run_demo_drift.py
 ```
 
-Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitor by the Evidently metric server.
+Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitored by the Evidently metric server.
 
 The metric server will receive the price prediction along with the features (model inputs) used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
 
 The metrics produced by Evidently will be logged to Promethus's database which will be available at port 9090. To access Prometheus web interface, go to your browser and open: http://localhost:9090/
 
-To visualise these metrics, Grafana is connected to Promethus's database to collect data for the dashboard. Grafana will be available at port 3030. To access Grafana web interface, go to your browser and open: http://localhost:3000/ . If this is your first time using Grafana, you will be asked to enter a username and password, by default, both the username and password is "admin".
+To visualise these metrics, Grafana is connected to Promethus's database to collect data for the dashboard. Grafana will be available at port 3030. To access Grafana web interface, go to your browser and open: http://localhost:3000/ . If this is your **first time using Grafana**, you will be asked to enter a username and password, by default, both the username and password is "admin".
 
 To stop the demo, press ctrl+c and shut down docker compose by running the following command:
 
@@ -145,7 +145,7 @@ For the no data drift production dataset, the number of bedrooms (which is curre
 
 For the data drift dataset, the number of bedrooms is generated using a skewed distribution of the the reference's dataset. At the moment, from the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will always generate a value of 7 to ensure data drfit. But this can be modified later on.
 
-Once the datasets are generatedm, the Random Forest Regressor is trained using the reference dataset.
+Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset.
 
 ### The dashboards
 
