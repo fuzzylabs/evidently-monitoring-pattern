@@ -1,6 +1,6 @@
 # Introduction
 
-This repo is a complete demo of real-time model monitoring using Evidently. Using a simple ML model which predicts house prices, we simulate model drift and outliers, and demonstrate these on a dashboard.
+This repo is a complete demo of real-time model/data monitoring using Evidently. Using a Random Forest Regressor to predict house prices and simulate data drift and outliers, and demonstrate these on a dashboard.
 
 # Outline
 
@@ -13,7 +13,7 @@ Within the repo, you will find:
 * `inference_server`: a model server that exposes our house price model through a REST API.
 * `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
 * `scenarios`: Two scripts that simulate different scenarios: e.g. a scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
-* `dashboards`: * a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
+* `dashboards`: a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
 * A `run_demo_no_drift.py` script to run the demo **with no data drift** using docker compose.
 * A `run_demo_drift.py` script to run the demo **with data drift** using docker compose.
 * A docker-compose file to run the whole thing.
@@ -36,7 +36,7 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
-3. **Clone this repo**
+3. **Clone this repo.**
 ```bash
 git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
 ```
@@ -133,9 +133,9 @@ The demo is comprised of 5 core components:
 
 - The Evidently metric server: this is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and outliers.
 
-- Prometheus: once the Evidently metric produced some metrics, they will be logged into Prometheus's database as time series data.
+- Prometheus: once the Evidently monitors have produced some metrics, they will be logged into Prometheus's database as time series data.
 
-- Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-build dashboard for visualising data drift is include in the `dashboards` directory.
+- Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the `dashboards` directory.
 
 ### How are the data generated?
 
@@ -143,7 +143,7 @@ Within the `datasets` folder, 1 reference and 2 production datasets were generat
 
 For the no data drift production dataset, the number of bedrooms (which is currently the only features for data drift monitoring) for each row of data is generated using the same distribution as the reference dataset to ensure that the same distribution, thus no data drift will be detected.
 
-For the data drift dataset, the number of bedrooms is generated using a skewed distribution of the the reference's dataset. At the moment, from the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will always generate a value of 7 to ensure data drfit. But this can be modified later on.
+For the data drift dataset, the number of bedrooms is generated using a skewed distribution of the the reference's dataset. At the moment, from the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will always generate a value of 7 to ensure data drfit. But this can be modified.
 
 Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset.
 
@@ -155,4 +155,4 @@ Once the datasets are generated, the Random Forest Regressor is trained using th
 
 ![Drift](images/Data_Drift.png)
 
-- When the data drift scenario is running, Grafana's dashboard should show data drift at a constant time frame, e.g. no data drfit for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
+- When the data drift scenario is running, Grafana's dashboard should show data drift at a relatively constant time frame, e.g. no data drfit for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
