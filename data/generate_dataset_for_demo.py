@@ -36,9 +36,9 @@ class ProbDistribution:
         self.items_dist = list(dist.values())
         self.shuffled_dist = self.skew_dist(self.items_dist)
         
-        print(self.no_items)
-        print(self.items_dist)
-        print(self.shuffled_dist)
+        # print(self.no_items)
+        # print(self.items_dist)
+        # print(self.shuffled_dist)
     
     def skew_dist(self, items_dist: list):
         min_dist_idx = items_dist.index(min(items_dist))
