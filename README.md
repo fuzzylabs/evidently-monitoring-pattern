@@ -28,17 +28,22 @@ You'll need Python 3, and Docker and Docker-compose.
 
 1. **Download and install [Docker](https://www.docker.com/) if you don't have it.**
 
-2. **Create a new Python virtual environment and activate it.** For Linux/MacOS users:
+2. **Clone this repo.**
+```bash
+git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
+```
+
+3. **Go to the demo directory:**
+```bash
+cd evidently-monitoring-demo
+```
+
+4. **Create a new Python virtual environment and activate it.** For Linux/MacOS users:
 
 ```bash
 python3 -m venv env
 source env/bin/activate 
 pip install -r requirements.txt
-```
-
-3. **Clone this repo.**
-```bash
-git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
 ```
 
 ## Download and prepare data for the model
