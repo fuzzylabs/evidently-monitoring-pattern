@@ -1,6 +1,6 @@
 # Introduction
 
-This repo is a complete demo of real-time model/data monitoring using Evidently. Using a Random Forest Regressor to predict house prices and simulate data drift and outliers, and demonstrate these on a dashboard.
+This repo is a complete demo of real-time data monitoring using Evidently. Using a Random Forest Regressor to predict house prices and simulate data drift by sending drifted feature(s) to the model. Evidently calculates the metrics for data drift, send them to Prometheus and demonstrate these on a pre-built Grafana dashboard.
 
 # Outline
 
@@ -8,11 +8,11 @@ This repo is a complete demo of real-time model/data monitoring using Evidently.
 
 Within the repo, you will find:
 
-* `data`: contains two scripts. Running the `get_data.py` will automicatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift and outliers); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
+* [`data`](#data): contains two scripts. Running the `get_data.py` will automicatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
 * `pipeline`: a model training script which will use the reference data to create and train a Random Forest Regressor model.
 * `inference_server`: a model server that exposes our house price model through a REST API.
 * `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
-* `scenarios`: Two scripts that simulate different scenarios: e.g. a scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
+* `scenarios`: Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
 * `dashboards`: a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
 * A `run_demo_no_drift.py` script to run the demo **with no data drift** using docker compose.
 * A `run_demo_drift.py` script to run the demo **with data drift** using docker compose.
@@ -43,13 +43,13 @@ git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
 
 ## Download and prepare data for the model
 
-1. **Get and set up Kaggle API token**
+1. **Get and set up Kaggle API token:**
 
 - Go to [Kaggle](https://www.kaggle.com) to log in or create an account.
 - Get into your account settings page.
 - Under the API section, click on `create a new API token`.
-- This will prompt you to download the `.json` file into your system. Open the file, and copy the username and key.
-- You can either export your Kaggle username and token to the environment:
+- This will prompt you to download the `.json` file into your system.
+- You can either export your Kaggle username and token to the environment. Open the file, copy the username and key and:
 
 ```bash
 export set KAGGLE_USERNAME=<your-kaggle-username>
@@ -78,7 +78,7 @@ python data/generate_dataset_for_demo.py
 
 This will split the dataset into reference and 2 production datasets, one with drifted data and one without.
 
-- To monitor data drift or outliers, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift and detect outliers. The production dataset does not include the price column as the price will be predicted by the regression model. The scripts will create two scenarios of production data, one with data drift and one without.
+- To monitor data drift or outliers, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift. The production dataset does not include the price column as the price will be predicted by the regression model. The scripts will create two scenarios of production data, one with data drift and one without.
 
 ## Training the Random Forest Regressor
 
@@ -109,7 +109,7 @@ python run_demo_drift.py
 
 Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitored by the Evidently metric server.
 
-The metric server will receive the price prediction along with the features (model inputs) used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
+The metric server will receive the price prediction along with the feature(s) (model inputs) used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
 
 The metrics produced by Evidently will be logged to Promethus's database which will be available at port 9090. To access Prometheus web interface, go to your browser and open: http://localhost:9090/
 
@@ -131,17 +131,17 @@ The demo is comprised of 5 core components:
 
 - The inference server: this is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 
-- The Evidently metric server: this is the Evidently metrics server which will monitor the predictions output by the inferenece server to detect data drift and outliers.
+- The Evidently metric server: this is the Evidently metrics server which will monitor both the inputs and outputs of the inferenece server to calculate the metrics for data drift.
 
 - Prometheus: once the Evidently monitors have produced some metrics, they will be logged into Prometheus's database as time series data.
 
 - Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the `dashboards` directory.
 
-### How are the data generated?
+### How are the data generated? <a name="data"></a>
 
 Within the `datasets` folder, 1 reference and 2 production datasets were generated (drift & no drift).
 
-For the no data drift production dataset, the number of bedrooms (which is currently the only features for data drift monitoring) for each row of data is generated using the same distribution as the reference dataset to ensure that the same distribution, thus no data drift will be detected.
+For the no data drift production dataset, the number of bedrooms (which is currently the only features for data drift monitoring) for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
 
 For the data drift dataset, the number of bedrooms is generated using a skewed distribution of the the reference's dataset. At the moment, from the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will always generate a value of 7 to ensure data drfit. But this can be modified.
 
