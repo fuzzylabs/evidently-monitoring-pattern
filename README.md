@@ -12,8 +12,8 @@ Within the repo, you will find:
 * `pipeline`: a model training script which will use the reference data to create and train a Random Forest Regressor model.
 * `inference_server`: a model server that exposes our house price model through a REST API.
 * `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
-* `scenarios`: Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
-* `dashboards`: a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
+* [`scenarios`](#scenario): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
+* [`dashboards`](#dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
 * A `run_demo_no_drift.py` script to run the demo **with no data drift** using docker compose.
 * A `run_demo_drift.py` script to run the demo **with data drift** using docker compose.
 * A docker-compose file to run the whole thing.
@@ -127,7 +127,7 @@ docker-compose down
 
 The demo is comprised of 5 core components:
 
-- Scenario scripts: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data.
+- Scenario scripts <a name="scenario"></a>: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data.
 
 - The inference server: this is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 
@@ -147,7 +147,7 @@ For the data drift dataset, the number of bedrooms is generated using a skewed d
 
 Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset.
 
-### The dashboards
+### The dashboards <a name="dashboards"></a>
 
 ![Drift](images/No_Drift.png)
 
