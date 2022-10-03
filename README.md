@@ -28,7 +28,7 @@ You'll need Python 3, and Docker and Docker-compose.
 
 1. **Download and install [Docker](https://www.docker.com/) if you don't have it.**
 
-2. **Clone this repo.**
+2. **Clone this repo:**
 ```bash
 git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
 ```
