@@ -40,6 +40,7 @@ def run_docker_compose():
     Run all containers using docker compose.
     '''
     logging.info("Running docker compose")
+    run_script(cmd=["docker", "volume", "rm", "evidently-monitoring-demo_prometheus_data"], wait=True)
     run_script(cmd=["docker-compose", "up", "-d"], wait=True)
 
 
