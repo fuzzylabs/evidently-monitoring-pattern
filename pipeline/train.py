@@ -55,7 +55,7 @@ def model_setup():
     model = RandomForestRegressor(random_state=28, verbose=1)
     return model
 
-def train(model) -> None:
+def train(model, X_train, y_train) -> None:
     '''
     Fit the model using the train set.
     '''
@@ -63,7 +63,7 @@ def train(model) -> None:
     model.fit(X_train, y_train)
     logging.info("Training Completed")
 
-def evaluate(model) -> None:
+def evaluate(model, X_test, y_test) -> None:
     '''
     Evaluate the model and show the metrics.
     '''
@@ -90,6 +90,6 @@ if __name__ == "__main__":
     setup_logger()
     X_train, X_test, y_train, y_test = prepare_data()
     model = model_setup()
-    train(model)
-    evaluate(model)
+    train(model, X_train, y_train)
+    evaluate(model, X_test, y_test)
     save_model(model)

@@ -76,7 +76,9 @@ if __name__ == "__main__":
     dataset_path = "data/processed_house_data.csv"
     save_path = "datasets/house_price_random_forest"
 
-    features = ['date', 'bedrooms', 'condition', 'price']
+    features = ['date', 'bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 
+                'waterfront', 'view', 'condition', 'grade', 'yr_built', 'price']
+
 
     reference_df = laod_data(dataset_path=dataset_path, features=features, no_rows=1000)
     production_df = reference_df.copy()
