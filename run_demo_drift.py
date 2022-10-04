@@ -41,6 +41,7 @@ def run_docker_compose() -> None:
     '''
     logging.info("Running docker compose")
     run_script(cmd=["docker", "volume", "rm", "evidently-monitoring-demo_prometheus_data"], wait=True)
+    run_script(cmd=["docker", "volume", "rm", "eeidently-monitoring-demo_grafana_data"], wait=True)
     run_script(cmd=["docker-compose", "up", "-d"], wait=True)
 
 
