@@ -40,8 +40,6 @@ def run_docker_compose():
     Run all containers using docker compose.
     '''
     logging.info("Running docker compose")
-    run_script(cmd=["docker", "volume", "rm", "evidently-monitoring-demo_prometheus_data"], wait=True)
-    run_script(cmd=["docker", "volume", "rm", "eeidently-monitoring-demo_grafana_data"], wait=True)
     run_script(cmd=["docker-compose", "up", "-d"], wait=True)
 
 
@@ -65,9 +63,12 @@ def send_data_to_model_server():
 
 def stop_docker_compose():
     os.system("docker-compose down")
+    run_script(cmd=["docker", "volume", "rm $(docker volume ls -q)"], wait=True)
 
 
 if __name__ == "__main__":
+    if run_script(cmd=["docker", "volume", "ls", "-q"], wait=True) != None:
+        run_script(cmd=["docker", "volume", "rm", "$(docker volume ls -q)"], wait=True)
     setup_logger()
     check_docker_installation()
     check_dataset()

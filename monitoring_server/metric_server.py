@@ -96,7 +96,7 @@ class MonitoringService:
 
     def iterate(self, dataset_name: str, new_rows: pd.DataFrame):
         # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column if we only care about features drift for now.
-        new_rows = new_rows[['bedrooms']] # We only want the bedroom feature for now
+        new_rows = new_rows[new_rows[['bedrooms', 'condition']]] # We only want the bedroom feature for now
         logging.info(new_rows)
         window_size = self.window_size
 
