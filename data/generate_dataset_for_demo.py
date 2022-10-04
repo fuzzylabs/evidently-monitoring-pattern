@@ -76,8 +76,7 @@ if __name__ == "__main__":
     dataset_path = "data/processed_house_data.csv"
     save_path = "datasets/house_price_random_forest"
 
-    features = ['date', 'bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 
-                'waterfront', 'view', 'condition', 'grade', 'yr_built', 'price']
+    features = ['date', 'bedrooms', 'condition', 'price']
 
     reference_df = laod_data(dataset_path=dataset_path, features=features, no_rows=1000)
     production_df = reference_df.copy()
@@ -86,17 +85,29 @@ if __name__ == "__main__":
     min_beds = reference_df.min(axis=0)["bedrooms"]
     max_beds = reference_df.max(axis=0)["bedrooms"]
 
-    dist = compute_dist(reference_df['bedrooms'])
-    feature_generator = ProbDistribution(dist)
+    min_condition = reference_df.min(axis=0)["condition"]
+    max_condition = reference_df.max(axis=0)["condition"]
+
+    bedrooms_dist = compute_dist(reference_df["bedrooms"])
+    print(bedrooms_dist)
+    bedrooms_generator = ProbDistribution(bedrooms_dist)
+    print(bedrooms_generator.shuffled_dist)
+
+    condition_dist = compute_dist(reference_df["condition"])
+    print(condition_dist)
+    condition_generator = ProbDistribution(condition_dist)
+    print(condition_generator.shuffled_dist)
 
     counter = 0
 
     for index, row in production_df.iterrows():
         if counter < 10:
-            production_df.at[index, "bedrooms"] = feature_generator.generate_val(shuffle_dist=False)
+            production_df.at[index, "bedrooms"] = bedrooms_generator.generate_val(shuffle_dist=False)
+            production_df.at[index, "condition"] = condition_generator.generate_val(shuffle_dist=False)
             counter += 1
         elif counter >= 10 and counter < 15:
-            production_df.at[index, "bedrooms"] = feature_generator.generate_val(shuffle_dist=True)
+            production_df.at[index, "bedrooms"] = bedrooms_generator.generate_val(shuffle_dist=True)
+            production_df.at[index, "condition"] = condition_generator.generate_val(shuffle_dist=True)
             counter += 1
         elif counter == 15:
             counter = 0
@@ -107,7 +118,8 @@ if __name__ == "__main__":
     production_df.to_csv(os.path.join(save_path, "production_with_drift.csv"), index=False)
 
     for index, row in production_df.iterrows():
-        production_df.at[index, "bedrooms"] = feature_generator.generate_val(shuffle_dist=False)
+        production_df.at[index, "bedrooms"] = bedrooms_generator.generate_val(shuffle_dist=False)
+        production_df.at[index, "condition"] = condition_generator.generate_val(shuffle_dist=False)
             
     production_df.to_csv(os.path.join(save_path, "production_no_drift.csv"), index=False) 
 

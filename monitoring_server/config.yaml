@@ -4,7 +4,7 @@ datasets:
       categorical_features:
       # - waterfront
       # - view
-      # - condition
+      - condition
       # - grade
       numerical_features:
       - bedrooms
