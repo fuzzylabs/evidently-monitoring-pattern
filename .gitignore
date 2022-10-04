@@ -3,6 +3,8 @@
 *.csv
 *.pkl
 datasets
-env
+demoenv
 .DS_Store
-.ipynb
+*.ipynb
+*_
+*.ipynb_checkpoints

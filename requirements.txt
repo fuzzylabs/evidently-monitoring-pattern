@@ -9,3 +9,4 @@ kaggle>=1.5.12
 Flask>=2.0.3
 prometheus-client>=0.14.1
 jsonify>=0.5
+matplotlib==3.6.0
