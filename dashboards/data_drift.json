@@ -43,7 +43,7 @@
         "content": "# Evidently Data Drift Monitoring\n\n  This is a dashboard to visualise data drift. The dashboard queries data from Promethus and display them in this Grafana dashboard.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -317,7 +317,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -389,7 +389,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -398,7 +398,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "Evidently:data_drift:n_drifted_features{dataset_name=\"house_price_random_forest\"} /\nEvidently:data_drift:share_drifted_features{dataset_name=\"house_price_random_forest\"}",
+          "expr": "Evidently:n_features{dataset_name=\"house_price_random_forest\"}",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -407,7 +407,7 @@
           "refId": "A"
         }
       ],
-      "title": "Total number of features",
+      "title": "# of features",
       "transformations": [],
       "type": "stat"
     },

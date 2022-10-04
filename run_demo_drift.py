@@ -39,6 +39,8 @@ def run_docker_compose() -> None:
     '''
     Run all containers using docker compose.
     '''
+    if os.system("docker volume ls -q") != None:
+        os.system("docker volume rm $(docker volume ls -q)")
     logging.info("Running docker compose")
     run_script(cmd=["docker-compose", "up", "-d"], wait=True)
 
@@ -66,8 +68,6 @@ def stop_docker_compose() -> None:
 
 
 if __name__ == "__main__":
-    if run_script(cmd=["docker", "volume", "ls", "-q"], wait=True) != None:
-        run_script(cmd=["docker", "volume", "rm", "$(docker volume ls -q)"], wait=True)
     setup_logger()
     check_docker_installation()
     check_dataset()

@@ -19,6 +19,7 @@ from prometheus_client import Gauge
 
 from evidently.runner.loader import DataLoader # Basically pd.read_csv()
 from evidently.runner.loader import DataOptions # Set a column for date, header and separtor etc...
+from evidently.options.data_drift import DataDriftOptions # Set data drift options e.g share drift etc..
 
 
 app = Flask(__name__)
@@ -77,13 +78,15 @@ class MonitoringService:
         self.column_mapping = {}
         self.window_size = window_size
         self.calculation_period_sec = calculation_period_sec
+        self.options = DataDriftOptions(drift_share=1)
 
         for dataset_info in datasets.values():
-            bedroom_only = dataset_info.references[['bedrooms']]
+            features = dataset_info.references[['bedrooms', 'condition']]
             # self.reference[dataset_info.name] = dataset_info.references
-            self.reference[dataset_info.name] = bedroom_only
+            self.reference[dataset_info.name] = features
             self.monitoring[dataset_info.name] = ModelMonitoring(
-                monitors = [EVIDENTLY_MONITORS_MAPPING[monitor]() for monitor in dataset_info.monitors]
+                monitors = [EVIDENTLY_MONITORS_MAPPING[monitor]() for monitor in dataset_info.monitors],
+                options = [self.options]
             )
             self.column_mapping[dataset_info.name] = dataset_info.column_mapping
 
@@ -93,10 +96,12 @@ class MonitoringService:
         self.next_run_time = {}
         self.hash = hashlib.sha256(pd.util.hash_pandas_object(self.reference["house_price_random_forest"]).values).hexdigest()
         self.hash_metric = prometheus_client.Gauge("Evidently:reference_dataset_hash", "", labelnames=["hash"])
+        self.n_feature = 2
+        self.n_feature_metric = prometheus_client.Gauge("Evidently:n_features", "", labelnames=["dataset_name"])
 
     def iterate(self, dataset_name: str, new_rows: pd.DataFrame):
         # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column if we only care about features drift for now.
-        new_rows = new_rows[new_rows[['bedrooms', 'condition']]] # We only want the bedroom feature for now
+        new_rows = new_rows[['bedrooms', 'condition']] # We only want the bedroom and the condition feature for now
         logging.info(new_rows)
         window_size = self.window_size
 
@@ -132,10 +137,10 @@ class MonitoringService:
         ) # The exectue method inherits from the Pipeline class
 
         self.hash_metric.labels(hash=self.hash).set(1)
+        self.n_feature_metric.labels(**{"dataset_name": dataset_name}).set(self.n_feature)
 
         for metric, value, labels in self.monitoring[dataset_name].metrics():
             metric_key = f"Evidently:{metric.name}"
-            #logging.info(metric_key)
             found = self.metrics.get(metric_key)
 
             if not labels:
