@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import os
 import logging
-import random
 
 
 def setup_logger() -> None:
