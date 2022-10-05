@@ -22,7 +22,7 @@ Within the repo, you will find:
 
 ## Pre-requisites
 
-You'll need Python 3, and Docker and Docker-compose.
+You'll need Python 3, and Docker and Docker Compose.
 
 ## Getting started
 
