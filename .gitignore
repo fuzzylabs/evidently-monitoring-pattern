@@ -7,3 +7,4 @@ demoenv
 .DS_Store
 *_
 *.ipynb_checkpoints
+*.vscode

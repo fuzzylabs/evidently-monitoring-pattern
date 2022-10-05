@@ -8,7 +8,7 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 Within the repo, you will find:
 
-* [`data`](#data): contains two scripts. Running the `get_data.py` will automicatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
+* [`data`](#data): contains two scripts. Running the `get_data.py` will automatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
 * `pipeline`: a model training script which will use the reference data to create and train a Random Forest Regressor model.
 * `inference_server`: a model server that exposes our house price model through a REST API.
 * `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
@@ -142,7 +142,7 @@ The demo is comprised of 5 core components:
 
 - The inference server: this is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 
-- The Evidently metric server: this is the Evidently metrics server which will monitor both the inputs and outputs of the inferenece server to calculate the metrics for data drift.
+- The Evidently metric server: this is the Evidently metrics server which will monitor both the inputs and outputs of the inference server to calculate the metrics for data drift.
 
 - Prometheus: once the Evidently monitors have produced some metrics, they will be logged into Prometheus's database as time series data.
 
@@ -154,7 +154,7 @@ Within the `datasets` folder, 1 reference and 2 production datasets were generat
 
 For the no data drift production dataset, the number of bedrooms and the condition features for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
 
-For the data drift dataset, both the number of bedrooms and the condition features are generated using a skewed distribution of the the reference's dataset. E.g. At Looking at the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will generate a value of 7 to simulate data drfit.
+For the data drift dataset, both the number of bedrooms and the condition features are generated using a skewed distribution of the the reference's dataset. E.g. At Looking at the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will generate a value of 7 to simulate data drift.
 
 Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset.
 
@@ -176,4 +176,4 @@ Distribution comparison between the reference datasets and the **drifted** produ
 
 ![Drift](images/Data_Drift.png)
 
-- When the data drift scenario is running, Grafana's dashboard should show data drift at a relatively constant time frame, e.g. no data drfit for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
+- When the data drift scenario is running, Grafana's dashboard should show data drift at a relatively constant time frame, e.g. no data drift for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
