@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import os
 import logging
-import random
 
 
 def setup_logger() -> None:
@@ -40,6 +39,7 @@ class ProbDistribution:
         min_dist_idx = items_dist.index(min(items_dist))
         shuffled_dist = [0 for x in range(len(items_dist))]
         shuffled_dist[min_dist_idx] = 1.0
+
         return shuffled_dist
 
     def generate_val(self, shuffle_dist: bool = False) -> float:
@@ -47,6 +47,7 @@ class ProbDistribution:
             val = np.random.choice(self.no_items, p=self.items_dist)
         elif shuffle_dist == True:
             val = np.random.choice(self.no_items, p=self.shuffled_dist)
+
         return val
 
 
@@ -91,14 +92,10 @@ if __name__ == "__main__":
     max_condition = reference_df.max(axis=0)["condition"]
 
     bedrooms_dist = compute_dist(reference_df["bedrooms"])
-    print(bedrooms_dist)
     bedrooms_generator = ProbDistribution(bedrooms_dist)
-    print(bedrooms_generator.shuffled_dist)
 
-    condition_dist = compute_dist(reference_df["condition"])
-    print(condition_dist)
+    condition_dist = compute_dist(reference_df["condition"]))
     condition_generator = ProbDistribution(condition_dist)
-    print(condition_generator.shuffled_dist)
 
     counter = 0
 

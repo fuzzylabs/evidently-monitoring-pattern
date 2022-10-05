@@ -5,6 +5,5 @@
 datasets
 demoenv
 .DS_Store
-*.ipynb
 *_
 *.ipynb_checkpoints

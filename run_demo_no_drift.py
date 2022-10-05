@@ -39,6 +39,8 @@ def run_docker_compose():
     '''
     Run all containers using docker compose.
     '''
+    if os.system("docker image ls -q") != None:
+        os.system("docker image rm $(docker image ls -q)")
     if os.system("docker volume ls -q") != None:
         os.system("docker volume rm $(docker volume ls -q)")
     logging.info("Running docker compose")

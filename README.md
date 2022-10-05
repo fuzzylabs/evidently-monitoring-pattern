@@ -41,12 +41,18 @@ cd evidently-monitoring-demo
 4. **Create a new Python virtual environment and activate it.** For Linux/MacOS users:
 
 ```bash
-python3 -m venv env
-source env/bin/activate 
+python3 -m venv demoenv
+source demoenv/bin/activate 
 pip install -r requirements.txt
 ```
 
+## Jupyter Notebook or Terminal
+
+From this point, you have the option to continue the demo by following the README.md file or you continue this demo with `demo.ipynb` (included in this repo) using Jupyter Notebook. 
+
 ## Download and prepare data for the model
+
+NOTE: If you already have Kaggle API token set up on your machine, you can skip step 1 and go to [step 2](#step2)
 
 1. **Get and set up Kaggle API token:**
 
@@ -67,7 +73,7 @@ export set KAGGLE_KEY=<your-kaggle-api-key>
 mv ~/Downloads/kaggle.json ~/.kaggle/kaggle.json
 ```
 
-2. **Run the `get_data.py` script**:
+2. **Run the `get_data.py` script**: <a name="step2"></a>
 
 ```bash
 python data/get_data.py
@@ -146,11 +152,21 @@ The demo is comprised of 5 core components:
 
 Within the `datasets` folder, 1 reference and 2 production datasets were generated (drift & no drift).
 
-For the no data drift production dataset, the number of bedrooms (which is currently the only features for data drift monitoring) for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
+For the no data drift production dataset, the number of bedrooms and the condition features for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
 
-For the data drift dataset, the number of bedrooms is generated using a skewed distribution of the the reference's dataset. At the moment, from the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will always generate a value of 7 to ensure data drfit. But this can be modified.
+For the data drift dataset, both the number of bedrooms and the condition features are generated using a skewed distribution of the the reference's dataset. E.g. At Looking at the reference dataset, if 7 bedrooms has the lowest probability distribution, then the `generate_dataset_for_demo.py` script will generate a value of 7 to simulate data drfit.
 
 Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset.
+
+### Histogram visualisation
+
+Distribution comparison between the reference datasets and the **non-drifted** production dataset:
+
+![NoDriftHistogram](images/No_Drift_Histogram.png)
+
+Distribution comparison between the reference datasets and the **drifted** production dataset:
+
+![DriftHistogram](images/Drift_Histogram.png)
 
 ### The dashboards <a name="dashboards"></a>
 
