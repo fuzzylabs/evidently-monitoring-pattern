@@ -48,7 +48,7 @@ pip install -r requirements.txt
 
 ## Jupyter Notebook or Terminal
 
-From this point, you have the option to continue the demo by following the README.md file or you continue this demo with `demo.ipynb` (included in this repo) using Jupyter Notebook. 
+From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](https://github.com/fuzzylabs/evidently-monitoring-demo/blob/secondFeature/demo.ipynb) (included in this repo) using Jupyter Notebook. 
 
 ## Download and prepare data for the model
 
