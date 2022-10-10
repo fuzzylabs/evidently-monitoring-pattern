@@ -52,7 +52,7 @@ From this point, you have the option to continue the demo by following the instr
 
 ## Download and prepare data for the model
 
-NOTE: If you already have Kaggle API token set up on your machine, you can skip step 1 and go to [step 2](#step2)
+NOTE: If you already have Kaggle API token set up on your machine, you can skip step 1 and go to [step 2](#step2).
 
 1. **Get and set up Kaggle API token:**
 
