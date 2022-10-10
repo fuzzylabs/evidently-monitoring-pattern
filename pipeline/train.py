@@ -1,13 +1,15 @@
+from typing import Tuple
 import pandas as pd
 import numpy as np
 import logging
 import pickle
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-def setup_logger():
+def setup_logger() -> None:
     logging.basicConfig(
         level=logging.INFO, 
         format="%(asctime)s [%(levelname)s] %(message)s",
@@ -16,10 +18,21 @@ def setup_logger():
         ]
     )
 
-def prepare_data():
-    logging.info("Preparing data for train and test")
-    df = pd.read_csv('data/processed_house_data.csv', index_col='date')
+def prepare_data() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    '''
+    Load the downloaed dataset into a pandas dataframe.
 
+    Select features that will be used to train the regression model.
+
+    Split and return the dataset into train and test set using a 80/20 ratio.
+    '''
+    data_path = "datasets/house_price_random_forest/reference.csv"
+    if not os.path.exists(data_path):
+        logging.error(f"Reference data does not exists in path: {data_path}")
+        exit("Failed to load data")
+    
+    logging.info("Preparing data for train and test")
+    df = pd.read_csv(data_path, index_col='date')
     target = 'price'
     prediction = 'predicted_price'
     datetime = 'date'
@@ -35,16 +48,25 @@ def prepare_data():
     return X_train, X_test, y_train, y_test
 
 def model_setup():
+    '''
+    Initalise and return the regression model.
+    '''
     logging.info("Creating Random Forest Regressor model")
     model = RandomForestRegressor(random_state=28, verbose=1)
     return model
 
-def train(model):
+def train(model, X_train, y_train) -> None:
+    '''
+    Fit the model using the train set.
+    '''
     logging.info("Training model")
     model.fit(X_train, y_train)
     logging.info("Training Completed")
 
-def evaluate(model):
+def evaluate(model, X_test, y_test) -> None:
+    '''
+    Evaluate the model and show the metrics.
+    '''
     logging.info("Evaluating model on test set")
     predictions = model.predict(X_test)
     mse = mean_squared_error(y_test, predictions)
@@ -57,14 +79,17 @@ def evaluate(model):
     logging.info(f"Root Mean Squared Error: {rmse}")
     logging.info(f"R-Squared: {r2}")
 
-def save_model(model):
-    with open('pipeline/model.pkl','wb') as f:
+def save_model(model) -> None:
+    '''
+    Save the trained model using pickle into the models folder.
+    '''
+    with open('models/model.pkl','wb') as f:
         pickle.dump(model, f)
 
 if __name__ == "__main__":
     setup_logger()
     X_train, X_test, y_train, y_test = prepare_data()
     model = model_setup()
-    train(model)
-    evaluate(model)
+    train(model, X_train, y_train)
+    evaluate(model, X_test, y_test)
     save_model(model)

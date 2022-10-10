@@ -1,0 +1,28 @@
+datasets:
+  house_price_random_forest:
+    column_mapping:
+      categorical_features:
+      # - waterfront
+      # - view
+      - condition
+      # - grade
+      numerical_features:
+      - bedrooms
+      # - bathrooms
+      # - sqft_living
+      # - sqft_lot
+      # - floors
+      # - yr_built
+      target:
+      datetime: date
+    data_format:
+      header: true
+      separator: ','
+    monitors:
+      - data_drift
+service:
+  datasets_path: datasets
+  use_reference: true
+  moving_reference: false
+  window_size: 5
+  calculation_period_sec: 1

@@ -1,5 +1,12 @@
+dataclasses==0.6
+requests==2.19.0
+PyYAML==5.1
+evidently>=0.1.56.dev0
 numpy>=1.19.5
 pandas>=1.1.5
 scikit-learn>=0.24.2
 kaggle>=1.5.12
-flask>=2.2.0
+Flask>=2.0.3
+prometheus-client>=0.14.1
+jsonify>=0.5
+matplotlib==3.6.0

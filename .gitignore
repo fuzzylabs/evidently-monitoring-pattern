@@ -2,5 +2,9 @@
 *.zip
 *.csv
 *.pkl
-env
-venv
+datasets
+demoenv
+.DS_Store
+*_
+*.ipynb_checkpoints
+*.vscode
