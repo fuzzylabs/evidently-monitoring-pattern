@@ -6,7 +6,7 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 - [Outline](#outline)
 - [Running locally](#running-locally)
-- [How does the demo works?](#how-does-the-demo-works?)
+- [How does the demo works?](#how-does-the-demo-works-?)
 
 # Outline
 
