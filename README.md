@@ -150,7 +150,7 @@ The demo is comprised of 5 core components:
 
 - Prometheus: once the Evidently monitors have produced some metrics, they will be logged into Prometheus's database as time series data.
 
-- Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the `dashboards` directory.
+- Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the [`dashboards`](dashboards) directory.
 
 ## How are the data generated?
 
