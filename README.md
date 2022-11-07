@@ -93,7 +93,7 @@ This will download and save the data from Kaggle.
 python data/generate_dataset_for_demo.py
 ```
 
-This will split the dataset into 1 reference and 2 production datasets, one with drifted data and one without.
+This will split the dataset into 1 reference and 2 production datasets, 1 with drifted data and 1 without.
 
 ## Training the Random Forest Regressor
 
