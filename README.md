@@ -95,8 +95,6 @@ python data/generate_dataset_for_demo.py
 
 This will split the dataset into reference and 2 production datasets, one with drifted data and one without.
 
-- To monitor data drift or outliers, etc.., two datasets are required to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift. The production dataset does not include the price column as the price will be predicted by the regression model. The scripts will create two scenarios of production data, one with data drift and one without.
-
 ## Training the Random Forest Regressor
 
 1. **Run the `train.py` script to train the model**:
@@ -156,9 +154,11 @@ The demo is comprised of 5 core components:
 
 ## How are the data generated?
 
+To monitor data drift or outliers, etc., Evidently requires at least two datasets to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift. Production datasets do not include the price column as the price will be predicted by the regression model.
+
 The original dataset downloaded from Kaggle contains 20 features. To make this demo simple and easy to understand, we are only going to select 2 features from the original dataset.
 
-Within the `datasets` folder, 1 reference and 2 production datasets were generated (drift & no drift).
+The [`generate_dataset_for_demo.py`](data/generate_dataset_for_demo.py) scripts will create two scenarios of production data, 1 with data drift, 1 without and 1 reference dataset. These will be stored under the `datasets` folder.
 
 For the no data drift production dataset, the number of bedrooms and the condition features for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
 
