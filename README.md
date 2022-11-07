@@ -6,7 +6,7 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 - [Outline](#outline)
 - [Running locally](#running-locally)
-- [How does the demo works?](#how-does-the-demo-works-?)
+- [How does the demo work?](#how-does-the-demo-work?)
 
 # Outline
 
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ## Jupyter Notebook or Terminal
 
-From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo works?**](#how-does-the-demo-works?) to see how each individual component works with each other and how are the datasets generated.
+From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo work?**](#how-does-the-demo-work?) to see how each individual component works with each other and how are the datasets generated.
 
 ## Download and prepare data for the model
 
