@@ -142,7 +142,7 @@ docker compose down
 
 The demo is comprised of 5 core components:
 
-- Scenario scripts: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data. The [How are the data generated?](#how-are-the-data-generated) section will explain how are the two production csv generated.
+- Scenario scripts: within the [`scenarios`](scenarios) folder, it contains two scripts namely [`drift.py`](scenarios/drift.py) and [`no_drift.py`](scenarios/no_drift.py). Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data. The [How are the data generated?](#how-are-the-data-generated) section will explain how are the two production csv generated.
 
 - The inference server: this is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 
