@@ -6,7 +6,7 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 - [Outline](#outline)
 - [Running locally](#running-locally)
-- [How does the demo work?](#how-does-the-demo-work?)
+- [How does the demo work?](#how-does-the-demo-work)
 
 # Outline
 
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ## Jupyter Notebook or Terminal
 
-From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo work?**](#how-does-the-demo-work?) to see how each individual component works with each other and how are the datasets generated.
+From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo work?**](#how-does-the-demo-work) to see how each individual component works with each other and how are the datasets generated.
 
 ## Download and prepare data for the model
 
@@ -144,7 +144,7 @@ docker compose down
 
 The demo is comprised of 5 core components:
 
-- Scenario scripts <a name="scenario"></a>: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data. The [How are the data generated?](#data) section will explain how are the two production csv generated.
+- Scenario scripts: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data. The [How are the data generated?](#how-are-the-data-generated) section will explain how are the two production csv generated.
 
 - The inference server: this is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 
@@ -154,7 +154,7 @@ The demo is comprised of 5 core components:
 
 - Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the `dashboards` directory.
 
-## How are the data generated? <a name="data"></a>
+## How are the data generated?
 
 The original dataset downloaded from Kaggle contains 20 features. To make this demo simple and easy to understand, we are only going to select 2 features from the original dataset.
 
@@ -176,7 +176,7 @@ Distribution comparison between the reference datasets and the **drifted** produ
 
 ![DriftHistogram](images/Drift_Histogram.png)
 
-## The dashboards <a name="dashboards"></a>
+## The dashboards
 
 ![Drift](images/No_Drift.png)
 
