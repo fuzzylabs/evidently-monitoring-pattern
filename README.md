@@ -6,7 +6,7 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 - [Outline](#outline)
 - [Running locally](#running-locally)
-- [How does the demo works?](#how-does-the-demo-work)
+- [How does the demo works?](#how-does-the-demo-works?)
 
 # Outline
 
@@ -16,7 +16,7 @@ Within the repo, you will find:
 
 * [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
 * [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
-* `inference_server`: a model server that exposes our house price model through a REST API.
+* [`inference_server`](model_server): a model server that exposes our house price model through a REST API.
 * [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
 * [`scenarios`](scenarios): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
 * [`dashboards`](dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ## Jupyter Notebook or Terminal
 
-From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](https://github.com/fuzzylabs/evidently-monitoring-demo/blob/master/demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo works?**](#explain) to see how each individual component works with each other and how are the datasets generated.
+From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo works?**](#how-does-the-demo-works?) to see how each individual component works with each other and how are the datasets generated.
 
 ## Download and prepare data for the model
 
@@ -138,7 +138,7 @@ To stop the demo, press ctrl+c and shut down docker compose by running the follo
 docker compose down
 ```
 
-# How does the demo work? <a name="explain"></a>
+# How does the demo work?
 
 ![Flow](images/Monitoring_Flow_Chart.png)
 
