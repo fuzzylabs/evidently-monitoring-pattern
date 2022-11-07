@@ -2,27 +2,33 @@
 
 This repo is a complete demo of real-time data monitoring using Evidently. Using a Random Forest Regressor to predict house prices and simulate data drift by sending drifted feature(s) to the model. Evidently calculates the metrics for data drift, send them to Prometheus and demonstrate these on a pre-built Grafana dashboard.
 
+# Contents
+
+- [Outline](#outline)
+- [Running locally](#running-locally)
+- [How does the demo works?](#how-does-the-demo-work)
+
 # Outline
 
 <!-- TODO: add detail to this description -->
 
 Within the repo, you will find:
 
-* [`data`](#data): contains two scripts. Running the `get_data.py` will automatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
-* `pipeline`: a model training script which will use the reference data to create and train a Random Forest Regressor model.
+* [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
+* [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
 * `inference_server`: a model server that exposes our house price model through a REST API.
-* `monitoring_server`: an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
-* [`scenarios`](#scenario): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
-* [`dashboards`](#dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
-* A `run_demo_no_drift.py` script to run the demo **with no data drift** using docker compose.
-* A `run_demo_drift.py` script to run the demo **with data drift** using docker compose.
+* [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
+* [`scenarios`](scenarios): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
+* [`dashboards`](dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
+* A [`run_demo_no_drift.py`](run_demo_no_drift.py) script to run the demo **with no data drift** using docker compose.
+* A [`run_demo_drift.py`](run_demo_drift.py) script to run the demo **with data drift** using docker compose.
 * A docker-compose file to run the whole thing.
 
 # Running locally
 
 ## Pre-requisites
 
-You'll need Python 3, and Docker and Docker Compose.
+You'll need Python 3, and Docker and Docker Compose V2.
 
 ## Getting started
 
@@ -42,7 +48,7 @@ cd evidently-monitoring-demo
 
 ```bash
 python3 -m venv demoenv
-source demoenv/bin/activate 
+source demoenv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -129,16 +135,16 @@ To visualise these metrics, Grafana is connected to Prometheus's database to col
 To stop the demo, press ctrl+c and shut down docker compose by running the following command:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
-## How does the demo works? <a name="explain"></a>
+# How does the demo work? <a name="explain"></a>
 
 ![Flow](images/Monitoring_Flow_Chart.png)
 
 The demo is comprised of 5 core components:
 
-- Scenario scripts <a name="scenario"></a>: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data.
+- Scenario scripts <a name="scenario"></a>: within the `scenarios` folder, it contains two scripts namely `drift.py` and `no_drift.py`. Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data. The [How are the data generated?](#data) section will explain how are the two production csv generated.
 
 - The inference server: this is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
 
@@ -148,7 +154,9 @@ The demo is comprised of 5 core components:
 
 - Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the `dashboards` directory.
 
-### How are the data generated? <a name="data"></a>
+## How are the data generated? <a name="data"></a>
+
+The original dataset downloaded from Kaggle contains 20 features. To make this demo simple and easy to understand, we are only going to select 2 features from the original dataset.
 
 Within the `datasets` folder, 1 reference and 2 production datasets were generated (drift & no drift).
 
@@ -158,7 +166,7 @@ For the data drift dataset, both the number of bedrooms and the condition featur
 
 Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset.
 
-### Histogram visualisation
+## Histogram visualisation
 
 Distribution comparison between the reference datasets and the **non-drifted** production dataset:
 
@@ -168,7 +176,7 @@ Distribution comparison between the reference datasets and the **drifted** produ
 
 ![DriftHistogram](images/Drift_Histogram.png)
 
-### The dashboards <a name="dashboards"></a>
+## The dashboards <a name="dashboards"></a>
 
 ![Drift](images/No_Drift.png)
 
