@@ -2,19 +2,18 @@
 import logging
 import zipfile
 
-import pandas as pd
-
 import gdown
+import pandas as pd
 
 
 def setup_logger() -> None:
+    """Set logger basic config."""
     logging.basicConfig(
-        level=logging.INFO, 
+        level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.StreamHandler()
-        ]
+        handlers=[logging.StreamHandler()],
     )
+
 
 def download_dataset(url: str, output: str) -> None:
     """Download the dataset using the authenticated API.
@@ -49,7 +48,9 @@ def prepare_dataset() -> None:
 if __name__ == "__main__":
     setup_logger()
 
-    dataset_url = "https://drive.google.com/uc?id=1YTeSOebJhD2skONp9lJoO6YK6FhxcOd2"
+    dataset_url = (
+        "https://drive.google.com/uc?id=1YTeSOebJhD2skONp9lJoO6YK6FhxcOd2"
+    )
     output = "data/housesalesprediction.zip"
     download_dataset(dataset_url, output)
     prepare_dataset()
