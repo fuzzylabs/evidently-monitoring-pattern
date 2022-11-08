@@ -15,7 +15,8 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 Within the repo, you will find:
 
 * [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a Kaggle house sale prices dataset for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
-NOTE: The Kaggle dataset has been uploaded to Google Drive for easy access.
+
+    NOTE: The Kaggle dataset has been uploaded to Google Drive for easy access.
 * [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
 * [`inference_server`](model_server): a model server that exposes our house price model through a REST API.
 * [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
