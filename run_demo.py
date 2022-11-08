@@ -1,4 +1,5 @@
 """Run drift/no-drift demo."""
+import logging
 import os
 import time
 import argparse
