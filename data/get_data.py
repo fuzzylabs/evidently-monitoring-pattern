@@ -3,33 +3,28 @@ import logging
 import zipfile
 
 import pandas as pd
-from kaggle.api.kaggle_api_extended import KaggleApi
 
-from setup_logger import setup_logger
-
-
-def authenticate_api() -> KaggleApi():
-    """Authenticate the Kaggle API with your set environment username and token.
-
-    Returns:
-        KaggleApi: the authenticated API object
-    """
-    api = KaggleApi()
-    logging.info("Authenticating API keys")
-    api.authenticate()
-    logging.info("Keys authenticated")
-
-    return api
+import gdown
 
 
-def download_dataset(api: KaggleApi()) -> None:
+def setup_logger() -> None:
+    logging.basicConfig(
+        level=logging.INFO, 
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[
+            logging.StreamHandler()
+        ]
+    )
+
+def download_dataset(url: str, output: str) -> None:
     """Download the dataset using the authenticated API.
 
     Args:
-        api (KaggleApi): the authenticated API object
+        url (str): the link to the dataset on google drive
+        output (str): the name of the file and the output path
     """
-    logging.info("Downloading house pricing data from Kaggle")
-    api.dataset_download_files("harlfoxem/housesalesprediction", path="data")
+    logging.info("Downloading house pricing data from google drive")
+    gdown.download(url, output, quiet=False)
 
 
 def prepare_dataset() -> None:
@@ -53,6 +48,8 @@ def prepare_dataset() -> None:
 
 if __name__ == "__main__":
     setup_logger()
-    api = authenticate_api()
-    download_dataset(api)
+
+    dataset_url = "https://drive.google.com/uc?id=1YTeSOebJhD2skONp9lJoO6YK6FhxcOd2"
+    output = "data/housesalesprediction.zip"
+    download_dataset(dataset_url, output)
     prepare_dataset()

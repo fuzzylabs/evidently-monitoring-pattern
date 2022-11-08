@@ -14,7 +14,8 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 Within the repo, you will find:
 
-* [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a house sale prices dataset from Kaggle for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
+* [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a Kaggle house sale prices dataset for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
+NOTE: The Kaggle dataset has been uploaded to Google Drive for easy access.
 * [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
 * [`inference_server`](model_server): a model server that exposes our house price model through a REST API.
 * [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
@@ -54,38 +55,17 @@ pip install -r requirements.txt
 
 ## Jupyter Notebook or Terminal
 
-From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explanation as we go through each steps. Alternatively, you can check out [**How does the demo work?**](#how-does-the-demo-work) to see how each individual component works with each other and how are the datasets generated.
+From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explaination as we go through each steps. Alternatively, you can check out [**How does the demo work?**](#how-does-the-demo-work) to see how each individual component works with each other and how are the datasets generated.
 
 ## Download and prepare data for the model
 
-NOTE: If you already have Kaggle API token set up on your machine, you can skip step 1 and go to [step 2](#step2).
-
-1. **Get and set up Kaggle API token:**
-
-- Go to [Kaggle](https://www.kaggle.com) to log in or create an account.
-- Get into your account settings page.
-- Under the API section, click on `create a new API token`.
-- This will prompt you to download the `.json` file into your system.
-- You can either export your Kaggle username and token to the environment. Open the file, copy the username and key and:
-
-```bash
-export set KAGGLE_USERNAME=<your-kaggle-username>
-export set KAGGLE_KEY=<your-kaggle-api-key>
-```
-
-- Or move the downloaded `kaggle.json` file:
-
-```bash
-mv ~/Downloads/kaggle.json ~/.kaggle/kaggle.json
-```
-
-2. **Run the `get_data.py` script**: <a name="step2"></a>
+1. **Run the `get_data.py` script**: <a name="step2"></a>
 
 ```bash
 python data/get_data.py
 ```
 
-This will download and save the data from Kaggle.
+This will download and save the data from Google drive.
 
 3. **Split the dataset into production and reference**:
 
@@ -154,9 +134,9 @@ The demo is comprised of 5 core components:
 
 ## How are the data generated?
 
-To monitor data drift or outliers, etc., Evidently requires at least two datasets to perform comparison. The house price data downloaded from Kaggle is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift. Production datasets do not include the price column as the price will be predicted by the regression model.
+To monitor data drift or outliers, etc., Evidently requires at least two datasets to perform comparison. The house price data downloaded from Google Drive is split into a reference and a production dataset. The reference dataset is used as the baseline data and for training the model. The second dataset is the current production data which will be used to compared against the reference dataset to identify data drift. Production datasets do not include the price column as the price will be predicted by the regression model.
 
-The original dataset downloaded from Kaggle contains 20 features. To make this demo simple and easy to understand, we are only going to select 2 features from the original dataset.
+The original dataset downloaded contains 20 features. To make this demo simple and easy to understand, we are only going to select 2 features from the original dataset.
 
 The [`generate_dataset_for_demo.py`](data/generate_dataset_for_demo.py) scripts will create two scenarios of production data, 1 with data drift, 1 without and 1 reference dataset. These will be stored under the `datasets` folder.
 
