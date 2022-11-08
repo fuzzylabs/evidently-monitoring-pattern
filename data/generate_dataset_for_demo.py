@@ -94,7 +94,7 @@ if __name__ == "__main__":
     bedrooms_dist = compute_dist(reference_df["bedrooms"])
     bedrooms_generator = ProbDistribution(bedrooms_dist)
 
-    condition_dist = compute_dist(reference_df["condition"]))
+    condition_dist = compute_dist(reference_df["condition"])
     condition_generator = ProbDistribution(condition_dist)
 
     counter = 0
