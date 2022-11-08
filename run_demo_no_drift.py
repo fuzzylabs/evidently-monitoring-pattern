@@ -41,7 +41,7 @@ def run_docker_compose() -> None:
 def run_script(cmd: list, wait: bool) -> None:
     """Run command in a terminal.
 
-    Arguments:
+    Args:
         cmd (list): commands to run
         wait (bool): wait for command to finish running or not
     """

@@ -77,7 +77,7 @@ class MonitoringService:
     ) -> None:
         """Initalise the class variables.
 
-        Arguments:
+        Args:
             datasets (dict): datasets to be monitored
             window_size (int): number of rows to be used for calculation
             calculation_period_sec (float): frequency for calculation
@@ -92,7 +92,6 @@ class MonitoringService:
 
         for dataset_info in datasets.values():
             features = dataset_info.references[["bedrooms", "condition"]]
-            # self.reference[dataset_info.name] = dataset_info.references
             self.reference[dataset_info.name] = features
             self.monitoring[dataset_info.name] = ModelMonitoring(
                 monitors=[
@@ -102,8 +101,6 @@ class MonitoringService:
                 options=[self.options],
             )
             self.column_mapping[dataset_info.name] = dataset_info.column_mapping
-
-        # print(self.reference['house_price_random_forest']['bedrooms'])
 
         self.metrics = {}
         self.next_run_time = {}
@@ -123,14 +120,14 @@ class MonitoringService:
     def iterate(self, dataset_name: str, new_rows: pd.DataFrame) -> None:
         """Get a new row of data for monitoring.
 
-        Arguments:
+        Args:
             dataset_name (str): name of the dataset
             new_rows (pd.DataFrame): a row of data used for inference from the inference server
         """
         # new_rows = new_rows.drop(['price'], axis = 1) # Drop price column if we only care about features drift for now.
         new_rows = new_rows[
             ["bedrooms", "condition"]
-        ]  # We only want the bedroom and the condition feature for now
+        ]  # We only want the bedroom and the condition feature
         logging.info(new_rows)
         window_size = self.window_size
 
@@ -302,7 +299,7 @@ def home() -> None:
 def iterate(dataset: str) -> str:
     """Get the data from the inference server and call the iterate method from a MonitoringService object.
 
-    Arguments:
+    Args:
         dataset (str): the dataset to monitor
 
     Returns:

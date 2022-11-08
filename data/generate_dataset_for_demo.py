@@ -11,7 +11,7 @@ from setup_logger import setup_logger
 def laod_data(dataset_path: str, features: list, no_rows: int) -> pd.DataFrame:
     """Loads the dataset in the specified path and select the features specified.
 
-    Arguments:
+    Args:
         dataset_path (str): the dataset path
         features (list): a list of features to use from the orignal dataset
         no_rows (int): number of rows to use
@@ -33,7 +33,7 @@ class ProbDistribution:
     def __init__(self, dist: dict) -> None:
         """Initialise class variables.
 
-        Arguments:
+        Args:
             dist (dict): distribution of a feature e.g. {Apple: 0.3, Banana: 0.5, Pear: 0.2}
         """
         self.no_items = list(dist.keys())
@@ -43,7 +43,7 @@ class ProbDistribution:
     def skew_dist(self, items_dist: list) -> dict:
         """Skew the distrubtion.
 
-        Arguments:
+        Args:
             items_dist (list): the distribution probability
 
         Returns:
@@ -58,7 +58,7 @@ class ProbDistribution:
     def generate_val(self, shuffle_dist: bool = False) -> float:
         """Generate a value base on the probability distribution.
 
-        Arguments:
+        Args:
             shuffle_dist (bool): whether to use skewed distribution or not
 
         Returns:
@@ -75,7 +75,7 @@ class ProbDistribution:
 def compute_dist(feature: pd.Series) -> dict:
     """This function compute the distribution of a feature from the dataset.
 
-    Arguments:
+    Args:
         feature (pd.Series): the feature to compute distribution for
 
     Returns:
@@ -130,9 +130,12 @@ if __name__ == "__main__":
     min_condition = reference_df.min(axis=0)["condition"]
     max_condition = reference_df.max(axis=0)["condition"]
 
+    # Compute the probability distribution of the bedrooms feature
     bedrooms_dist = compute_dist(reference_df["bedrooms"])
+    # Stores the orginal probability distribution and the skewd distribution
     bedrooms_generator = ProbDistribution(bedrooms_dist)
 
+    # Similar to the bedrooms feature above
     condition_dist = compute_dist(reference_df["condition"])
     condition_generator = ProbDistribution(condition_dist)
 
@@ -142,7 +145,9 @@ if __name__ == "__main__":
         if counter < 10:
             production_df.at[
                 index, "bedrooms"
-            ] = bedrooms_generator.generate_val(shuffle_dist=False)
+            ] = bedrooms_generator.generate_val(
+                shuffle_dist=False
+            )  # shuffle_dist=False mean the original distribution is used
             production_df.at[
                 index, "condition"
             ] = condition_generator.generate_val(shuffle_dist=False)
@@ -150,7 +155,9 @@ if __name__ == "__main__":
         elif counter >= 10 and counter < 15:
             production_df.at[
                 index, "bedrooms"
-            ] = bedrooms_generator.generate_val(shuffle_dist=True)
+            ] = bedrooms_generator.generate_val(
+                shuffle_dist=True
+            )  # shuffle_dist=True mean the skewed distribution is used
             production_df.at[
                 index, "condition"
             ] = condition_generator.generate_val(shuffle_dist=True)

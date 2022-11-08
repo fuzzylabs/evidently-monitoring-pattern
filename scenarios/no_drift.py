@@ -10,13 +10,13 @@ import requests
 from setup_logger import setup_logger
 
 
-def request_prediction(sleep_timeout: int) -> None:
+def request_prediction(sleep_timeout: int, model_server_url: str) -> None:
     """Send an instance from the production.csv to the inference server after each sleep time out.
 
-    Arguments:
+    Args:
         sleep_timeout (int): seconds to wait before requesting the next row for inference
+        model_server_url (str): the address of the inference server
     """
-    model_server_url = "http://127.0.0.1:5050/predict"
     dataset_path = "datasets/house_price_random_forest/production_no_drift.csv"
 
     dataset = pd.read_csv(dataset_path)
@@ -38,8 +38,6 @@ def request_prediction(sleep_timeout: int) -> None:
 
 
 if __name__ == "__main__":
-    setup_logger()
-
     parser = argparse.ArgumentParser(
         description="Script for data sending to Evidently metrics integration demo service"
     )
@@ -65,4 +63,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    request_prediction(args.timeout)
+
+    setup_logger()
+    model_server_url = "http://127.0.0.1:5050/predict"
+    request_prediction(args.timeout, model_server_url)

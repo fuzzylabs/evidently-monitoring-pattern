@@ -18,7 +18,7 @@ def prepare_data(
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Load, selected features and split dataset into train and test.
 
-    Arguments:
+    Args:
         data_path (str): the path of the reference dataset
         features (list): features to be used
         target (str): the name of the target
@@ -61,7 +61,7 @@ def train(
 ) -> None:
     """Fit the model using the train set.
 
-    Arguments:
+    Args:
         model (RandomForestRegressor): the model to be trained
         x_train (np.ndarray): the training dataset
         y_train (np.ndarray): the ground truth of the training dataset
@@ -76,7 +76,7 @@ def evaluate(
 ) -> None:
     """Evaluate the model and show the metrics.
 
-    Arguments:
+    Args:
         model (RandomForestRegressor): the trained model to be evaluated
         x_test (np.ndarray): the testing dataset
         y_test (np.ndarray): the ground truth of the testing dataset
@@ -97,7 +97,7 @@ def evaluate(
 def save_model(model: RandomForestRegressor) -> None:
     """Save the trained model using pickle into the models folder.
 
-    Arguments:
+    Args:
         model (RandomForestRegressor): the trained model to be saved
     """
     with open("models/model.pkl", "wb") as f:

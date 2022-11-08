@@ -25,7 +25,7 @@ def authenticate_api() -> KaggleApi():
 def download_dataset(api: KaggleApi()) -> None:
     """Download the dataset using the authenticated API.
 
-    Arguments:
+    Args:
         api (KaggleApi): the authenticated API object
     """
     logging.info("Downloading house pricing data from Kaggle")

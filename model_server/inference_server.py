@@ -17,14 +17,14 @@ app = Flask(__name__)
 class NumpyEncoder(json.JSONEncoder):
     """If object type contains types that are not JSON serializable, return object as JSON compatible types.
 
-    Arguments:
+    Args:
         json.JSONEncoder: inherit the class json.JSONEncoder and then implement the default method
     """
 
     def default(self, obj: object) -> object:
         """Implement the default method for the JSONEncoder class.
 
-        Arguments:
+        Args:
             obj (object): the object to encode
 
         Returns:
@@ -108,7 +108,7 @@ def predict() -> str:
 def send_pred_to_metric_server(pred_price: float) -> None:
     """This function sends the predictions made by the model together with the features are used to make the predictions to the metric server.
 
-    Arguments:
+    Args:
         pred_price (float): the predicted price
     """
     request_features = request.get_json()
