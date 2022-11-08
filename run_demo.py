@@ -47,11 +47,14 @@ if __name__ == "__main__":
     # run docker compose
     run_docker_compose()
     time.sleep(5)
-    # if drift scenario
-    if args.drift:
-        logging.info("Sending drifted data")
-        os.system("python scenarios/drift.py")
-    # if no drift scenario
-    elif args.no_drift:
-        logging.info("Sending non drifted data")
-        os.system("python scenarios/no_drift.py")
+    try:
+        # if drift scenario
+        if args.drift:
+            logging.info("Sending drifted data")
+            os.system("python scenarios/drift.py")
+        # if no drift scenario
+        elif args.no_drift:
+            logging.info("Sending non drifted data")
+            os.system("python scenarios/no_drift.py")
+    except KeyboardInterrupt:
+        logging.info("Interrupt detected.")
