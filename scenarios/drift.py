@@ -1,3 +1,4 @@
+"""Drift scenario to request predictions."""
 import argparse
 import json
 import time
@@ -11,10 +12,11 @@ dataset_path = "datasets/house_price_random_forest/production_with_drift.csv"
 
 
 def request_prediction(sleep_timeout: int) -> None:
-    """
-    Send an instance from the production.csv to the inference server after each sleep time out.
-    """
+    """Send an instance from the production_with_drift.csv to the inference server after each sleep time out.
 
+    Args:
+        sleep_timeout (int) : Timeout in seconds between each request.
+    """
     dataset = pd.read_csv(dataset_path)
 
     for _, row in dataset.iterrows():
@@ -24,11 +26,11 @@ def request_prediction(sleep_timeout: int) -> None:
 
         try:
             r = requests.post(model_server_url, json=features)
-            logging.info(f"Waiting for {sleep_timeout} seconds till next request.")
+            logging.info("Waiting for {sleep_timeout} seconds till next request.")
             time.sleep(sleep_timeout)
-
         except requests.exceptions.ConnectionError as e:
-            logging.error(f"Cannot reach the inference server.")
+            logging.error("Cannot reach the inference server.")
+            raise e
 
 
 if __name__ == "__main__":

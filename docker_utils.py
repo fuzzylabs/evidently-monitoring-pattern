@@ -1,12 +1,12 @@
+"""Docker utility functions."""
 import os
 import subprocess
+
 from setup_logger import logging
 
 
 def check_docker_installation():
-    """
-    Check if docker is installed.
-    """
+    """Check if docker is installed."""
     logging.info("Check docker version")
     docker_version_result = os.system("docker -v")
 
@@ -15,9 +15,7 @@ def check_docker_installation():
 
 
 def run_docker_compose():
-    """
-    Run all containers using docker compose.
-    """
+    """Run all containers using docker compose."""
     if os.system("docker image ls -q") != None:
         os.system("docker image rm $(docker image ls -q)")
     if os.system("docker volume ls -q") != None:
@@ -27,6 +25,13 @@ def run_docker_compose():
 
 
 def run_script(cmd: list, wait: bool) -> None:
+    """Run script using subprocess.
+
+    Args:
+        cmd (list): List of commands to run
+        wait (bool): Wait for the script to finish
+
+    """
     logging.info("Run %s", " ".join(cmd))
     script_process = subprocess.Popen(" ".join(cmd), stdout=subprocess.PIPE, shell=True)
 
@@ -38,5 +43,7 @@ def run_script(cmd: list, wait: bool) -> None:
 
 
 def stop_docker_compose():
-    os.system("docker-compose down")
+    """Stop docker compose"""
+    logging.info("Stopping docker compose")
+    os.system("docker compose down")
     run_script(cmd=["docker", "volume", "rm $(docker volume ls -q)"], wait=True)

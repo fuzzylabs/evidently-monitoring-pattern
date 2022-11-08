@@ -11,7 +11,7 @@ def check_dataset(dataset_path: str):
     """Check if dataset has been downloaded and prepared.
 
     Args:
-        dataset_path (str) : Path to dataset
+        dataset_path (str) : Path to the toy dataset
 
     """
     if not os.path.exists(dataset_path):
