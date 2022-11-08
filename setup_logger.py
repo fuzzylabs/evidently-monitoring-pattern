@@ -1,3 +1,4 @@
+"""Logger utility."""
 import logging
 
 
