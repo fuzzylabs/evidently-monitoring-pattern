@@ -1,8 +1,7 @@
 """Docker utility functions."""
+import logging
 import os
 import subprocess
-
-from setup_logger import logging
 
 
 def check_docker_installation():

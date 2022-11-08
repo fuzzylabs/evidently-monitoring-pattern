@@ -3,7 +3,7 @@ import os
 import time
 import argparse
 
-from setup_logger import logging
+from setup_logger import setup_logger
 from docker_utils import check_docker_installation, run_docker_compose
 
 
@@ -37,6 +37,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dataset_path = "datasets/house_price_random_forest"
+    # setup logger
+    setup_logger()
     # check if docker compose is installed
     check_docker_installation()
     # check if dataset is present at `dataset_path` path

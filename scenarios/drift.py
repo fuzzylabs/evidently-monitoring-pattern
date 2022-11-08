@@ -1,11 +1,12 @@
 """Drift scenario to request predictions."""
 import argparse
+import logging
 import json
 import time
 import pandas as pd
 import requests
 
-from setup_logger import logging
+from setup_logger import setup_logger
 
 model_server_url = "http://127.0.0.1:5050/predict"
 dataset_path = "datasets/house_price_random_forest/production_with_drift.csv"
@@ -54,4 +55,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", type=str, default="5050", help="Port of host")
 
     args = parser.parse_args()
+    # setup logger
+    setup_logger()
+    # send data to inference serverr
     request_prediction(args.timeout)
