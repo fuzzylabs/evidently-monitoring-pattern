@@ -26,7 +26,7 @@ def request_prediction(sleep_timeout: int) -> None:
 
         try:
             r = requests.post(model_server_url, json=features)
-            logging.info("Waiting for {sleep_timeout} seconds till next request.")
+            logging.info(f"Waiting for {sleep_timeout} seconds till next request.")
             time.sleep(sleep_timeout)
         except requests.exceptions.ConnectionError as e:
             logging.error("Cannot reach the inference server.")

@@ -15,9 +15,9 @@ def check_docker_installation():
 
 def run_docker_compose():
     """Run all containers using docker compose."""
-    if os.system("docker image ls -q") != None:
+    if os.system("docker image ls -q") is not None:
         os.system("docker image rm $(docker image ls -q)")
-    if os.system("docker volume ls -q") != None:
+    if os.system("docker volume ls -q") is not None:
         os.system("docker volume rm $(docker volume ls -q)")
     logging.info("Running docker compose")
     run_script(cmd=["docker", "compose", "up", "-d"], wait=True)
