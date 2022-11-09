@@ -6,7 +6,9 @@ import pandas as pd
 
 from .prob_distribution import ProbDistribution
 
-
+""" Jon:
+Typo in the function name.
+"""
 def laod_data(dataset_path: str, features: list, no_rows: int) -> pd.DataFrame:
     """Loads the dataset from the `dataset_path`,  select the `features` and number of rows upto `no_rows`.
 
