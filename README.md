@@ -60,10 +60,10 @@ From this point, you have the option to continue the demo by following the instr
 
 ## Download and prepare data for the model
 
-1. **Run the `get_data.py` script**: <a name="step2"></a>
+1. **Run the `download_dataset.py` script**: <a name="step2"></a>
 
 ```bash
-python data/get_data.py
+python download_dataset.py
 ```
 
 This will download and save the data from Google drive.
@@ -71,17 +71,17 @@ This will download and save the data from Google drive.
 3. **Split the dataset into production and reference**:
 
 ```bash
-python data/generate_dataset_for_demo.py
+python prepare_dataset.py
 ```
 
 This will split the dataset into 1 reference and 2 production datasets, 1 with drifted data and 1 without.
 
 ## Training the Random Forest Regressor
 
-1. **Run the `train.py` script to train the model**:
+1. **Run the `train_model.py` script to train the model**:
 
 ```bash
-python pipeline/train.py
+python train_model.py
 ```
 - Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
 
@@ -92,7 +92,7 @@ python pipeline/train.py
 - **Scenario 1:** No data drift
 
 ```bash
-python run_demo_no_drift.py
+python run_demo.py --no-drift
 ```
 
 OR
@@ -100,7 +100,7 @@ OR
 - **Scenario 2:** Data drift
 
 ```bash
-python run_demo_drift.py
+python run_demo.py --drift
 ```
 
 Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitored by the Evidently metric server.
@@ -114,7 +114,7 @@ To visualise these metrics, Grafana is connected to Prometheus's database to col
 To stop the demo, press ctrl+c and shut down docker compose by running the following command:
 
 ```bash
-docker compose down
+python run_demo.py --stop
 ```
 
 # How does the demo work?
@@ -139,7 +139,7 @@ To monitor data drift or outliers, etc., Evidently requires at least two dataset
 
 The original dataset downloaded contains 20 features. To make this demo simple and easy to understand, we are only going to select 2 features from the original dataset.
 
-The [`generate_dataset_for_demo.py`](data/generate_dataset_for_demo.py) scripts will create two scenarios of production data, 1 with data drift, 1 without and 1 reference dataset. These will be stored under the `datasets` folder.
+The [`prepare_dataset.py`](data/generate_dataset_for_demo.py) scripts will create two scenarios of production data, 1 with data drift, 1 without and 1 reference dataset. These will be stored under the `datasets` folder.
 
 For the no data drift production dataset, the number of bedrooms and the condition features for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
 
