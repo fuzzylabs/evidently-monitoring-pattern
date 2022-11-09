@@ -1,67 +1,48 @@
+"""Download data from Google drive and preprocess dataset."""
 import logging
+import os
 import zipfile
-import numpy as np
+
+import gdown
 import pandas as pd
 
-from kaggle.api.kaggle_api_extended import KaggleApi
+
+def download_dataset(url: str, output: str) -> None:
+    """Download the dataset using the gdown library.
+
+    Args:
+        url (str): the link to the dataset on google drive
+        output (str): the name of the file and the output path
+    """
+    logging.info("Downloading house pricing data from google drive")
+    # Download the dataset using gdown library
+    gdown.download(url, output, quiet=False)
 
 
-def setup_logger() -> None:
-    logging.basicConfig(
-        level=logging.INFO, 
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.StreamHandler()
-        ]
-    )
+def preprocess_dataset(output_path: str) -> None:
+    """Unzip dataset and set the date column as index and saves the dataset as csv.
 
-
-def authenticate_api() -> KaggleApi():
-    '''
-    Authenticate the Kaggle API with your set environment username and token.
-    
-    Retrun the authenticated API object.
-    '''
-    api = KaggleApi()
-    logging.info("Authenticating API keys")
-    api.authenticate()
-    logging.info("Keys authenticated")
-    return api
-
-
-def download_dataset(api: KaggleApi()) -> None:
-    '''
-    Download the dataset using the authenticated API.
-    '''
-    logging.info("Downloading house pricing data from Kaggle")
-    api.dataset_download_files('harlfoxem/housesalesprediction', path="data")
-
-
-def prepare_dataset() -> None:
-    '''
-    Unzip the downloaded dataset and set the date column as index.
-
-    Save the dataset as csv.
-    '''
+    Args:
+        output_path (str): the path to the output file
+    """
+    # Extract dataset
     logging.info("Extracting dataset zip file")
-    with zipfile.ZipFile('data/housesalesprediction.zip', 'r') as zip_ref:
-        zip_ref.extractall('data')
+    with zipfile.ZipFile(output_path, "r") as zip_ref:
+        zip_ref.extractall("data")
 
-    logging.info("Processing data")
+    logging.info(f"Downloaded dataset at path: {output_path}")
+    logging.info("Processing data...")
 
-    house_data = pd.read_csv("data/kc_house_data.csv")
-
-    house_data['date'] = pd.to_datetime(house_data['date'])
-
-    house_data.set_index('date', inplace=True)
-    house_data.to_csv('data/processed_house_data.csv')
-
-    house_data.head()
-    logging.info("processed_house_data.csv generated")
-
-
-if __name__ == "__main__":
-    setup_logger()
-    api = authenticate_api()
-    download_dataset(api)
-    prepare_dataset()
+    root_dir = os.path.dirname(output_path)
+    filename = "kc_house_data.csv"
+    # Read data
+    house_data = pd.read_csv(os.path.join(root_dir, filename))
+    # Convert to datetime using pandas
+    house_data["date"] = pd.to_datetime(house_data["date"])
+    # Set date column as index
+    house_data.set_index("date", inplace=True)
+    # Save as new dataset
+    new_filename = "processed_house_data.csv"
+    save_path = os.path.join(root_dir, new_filename)
+    house_data.to_csv(save_path)
+    logging.info(f"Saved processed dataset at path: {save_path}")
