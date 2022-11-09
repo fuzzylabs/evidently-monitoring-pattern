@@ -15,6 +15,7 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()],
 )
 
+
 # The encoder converts NumPy types in source data to JSON-compatible types
 class NumpyEncoder(json.JSONEncoder):
     """If object type contains types that are not JSON serializable, return object as JSON compatible types.

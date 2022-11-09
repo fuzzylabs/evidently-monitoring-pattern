@@ -39,6 +39,7 @@ app.wsgi_app = DispatcherMiddleware(
     app.wsgi_app, {"/metrics": prometheus_client.make_wsgi_app()}
 )
 
+
 @dataclass
 class MonitoringServiceOptions:
     """Monitoring service option parameters."""
