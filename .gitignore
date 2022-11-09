@@ -8,3 +8,4 @@ demoenv
 *_
 *.ipynb_checkpoints
 *.vscode
+logs

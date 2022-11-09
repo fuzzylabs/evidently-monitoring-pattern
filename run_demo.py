@@ -1,11 +1,14 @@
 """Run drift/no-drift demo."""
-import logging
 import os
 import time
 import argparse
 
-from setup_logger import setup_logger
-from docker_utils import check_docker_installation, run_docker_compose
+from config.config import logger
+from utils.docker_utils import (
+    check_docker_installation,
+    run_docker_compose,
+    stop_docker_compose,
+)
 
 
 def check_dataset(dataset_path: str):
@@ -14,9 +17,12 @@ def check_dataset(dataset_path: str):
     Args:
         dataset_path (str) : Path to the toy dataset
 
+    Raises:
+        FileNotFoundError : If dataset is not found at path `dataset_path`
     """
     if not os.path.exists(dataset_path):
-        logging.error(f"Dataset do not exist in path: {dataset_path}")
+        logger.error(f"Dataset do not exist in path: {dataset_path}")
+        raise FileNotFoundError(f"Dataset do not exist in path: {dataset_path}")
 
 
 if __name__ == "__main__":
@@ -28,33 +34,47 @@ if __name__ == "__main__":
         "--drift",
         default=False,
         action="store_true",
+        help="Send drift data for inference to evidently server",
     )
     parser.add_argument(
         "-no-d",
         "--no-drift",
-        default=True,
+        default=False,
         action="store_true",
+        help="Send no drift data for inference to evidently server",
+    )
+    parser.add_argument(
+        "-s",
+        "--stop",
+        default=False,
+        action="store_true",
+        help="Stop docker compose and remove container images",
     )
     args = parser.parse_args()
-
+    # Path to directory containing reference and dirft/no-drift datasets
     dataset_path = "datasets/house_price_random_forest"
-    # setup logger
-    setup_logger()
-    # check if docker compose is installed
+    # Check if docker compose is installed
     check_docker_installation()
-    # check if dataset is present at `dataset_path` path
+    # Check if dataset is present at `dataset_path` path
     check_dataset(dataset_path)
-    # run docker compose
+    # Run docker compose
     run_docker_compose()
+    # Wait for command to start
     time.sleep(5)
     try:
-        # if drift scenario
+        # If drift scenario
         if args.drift:
-            logging.info("Sending drifted data")
+            logger.info("Sending drifted data")
             os.system("python scenarios/drift.py")
-        # if no drift scenario
+        # If no drift scenario
         elif args.no_drift:
-            logging.info("Sending non drifted data")
+            logger.info("Sending non drifted data")
             os.system("python scenarios/no_drift.py")
     except KeyboardInterrupt:
-        logging.info("Interrupt detected.")
+        logger.info("Interrupt detected.")
+    # Stop docker compose
+    if args.stop:
+        logger.info(
+            "Stopping all services running in docker compose and removing container images"
+        )
+        stop_docker_compose()

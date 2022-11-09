@@ -13,14 +13,31 @@ def check_docker_installation():
         exit("Docker was not found. Try to install it with https://www.docker.com")
 
 
+def running_grafana_prometheus_docker_compose_services() -> bool:
+    """Check if granfana and prometheus services are running in docker compose.
+
+    Returns True if grafana and prometheus services are running in docker compose.
+    """
+    grafana_command = "docker compose ps -q grafana --status=running"
+    prometheus_command = "docker compose ps -q prometheus --status=running"
+    if (os.system(grafana_command) is not None) and (
+        os.system(prometheus_command) is not None
+    ):
+        # TODO: why 256 here?
+        if os.system(grafana_command) == 256 and os.system(prometheus_command) == 256:
+            return False
+        return True
+    return False
+
+
 def run_docker_compose():
     """Run all containers using docker compose."""
-    if os.system("docker image ls -q") is not None:
-        os.system("docker image rm $(docker image ls -q)")
-    if os.system("docker volume ls -q") is not None:
-        os.system("docker volume rm $(docker volume ls -q)")
-    logging.info("Running docker compose")
-    run_script(cmd=["docker", "compose", "up", "-d"], wait=True)
+    # run docker compose only when grafana and prometheus services are not running
+    if not running_grafana_prometheus_docker_compose_services():
+        logging.info("Running docker compose")
+        run_script(cmd=["docker", "compose", "up", "-d"], wait=True)
+    else:
+        logging.info("Found services : ['prometheus', 'grafana'] already running...")
 
 
 def run_script(cmd: list, wait: bool) -> None:
@@ -43,6 +60,5 @@ def run_script(cmd: list, wait: bool) -> None:
 
 def stop_docker_compose():
     """Stop docker compose"""
-    logging.info("Stopping docker compose")
     os.system("docker compose down")
     run_script(cmd=["docker", "volume", "rm $(docker volume ls -q)"], wait=True)
