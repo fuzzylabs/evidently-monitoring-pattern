@@ -1,4 +1,5 @@
 """Train a random forest regressor using the reference dataset."""
+import os
 from config.config import logger
 from pipeline.train import (
     evaluate,
@@ -12,8 +13,11 @@ if __name__ == "__main__":
     # Path to the reference dataset
     data_path = "datasets/house_price_random_forest/reference.csv"
     # Path for saving the trained model
-    save_path = "models/model.pkl"
-
+    save_model_path = "models/model.pkl"
+    save_dir = os.path.dirname(save_model_path)
+    if not os.path.exists(save_dir):
+        logger.info(f"Creating directory at path: {save_dir} to store models")
+        os.makedirs(save_dir)
     # Selecting portion of all features to be used for training
     features = [
         "bedrooms",
@@ -43,4 +47,4 @@ if __name__ == "__main__":
     # Evaluate the performance
     evaluate(model, x_test, y_test)
     # Saving the model
-    save_model(model, save_path)
+    save_model(model, save_model_path)
