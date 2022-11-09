@@ -10,6 +10,17 @@ from data.generate_dataset_for_demo import (
     generate_reference_data,
 )
 
+""" Jon:
+This code should be more functional with all of this split up into separate
+functions which return the necessary parts for the follow on steps. As per
+the download_dataset feedback, this code should be executed in the program
+execution if statement - there should be a 'main' function which sequentially
+calls the functions.
+
+'features' should probably be a global variable, or better yet, in a configuration
+file - same with the dataset_path and save_dir, both could be arguments passed
+to the file or in a configuration file.
+"""
 if __name__ == "__main__":
     logger.info("Generating reference data")
     # same path where preprocessed dataset is stored by preprocess_dataset function in download_dataset.py

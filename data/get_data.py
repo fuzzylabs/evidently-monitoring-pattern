@@ -6,7 +6,10 @@ import zipfile
 import gdown
 import pandas as pd
 
-
+""" Jon:
+These types of utility functions shouldn't really be doing any form of IO.
+They should return what they produce and IO should be handled a step above.
+"""
 def download_dataset(url: str, output: str) -> None:
     """Download the dataset using the gdown library.
 
