@@ -134,11 +134,11 @@ python run_demo.py --stop
 
 The demo is comprised of 5 core components:
 
-- Scenarios
-- Inference server
-- Evidently metric server
-- Prometheus
-- Grafana
+- [Scenarios](#scenarios)
+- [Inference server](#inference-server)
+- [Evidently server](#evidently-server)
+- [Prometheus](#prometheus)
+- [Grafana](#grafana)
 
 ## Scenarios
 
