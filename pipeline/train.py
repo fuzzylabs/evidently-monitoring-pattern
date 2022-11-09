@@ -6,7 +6,6 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from setup_logger import setup_logger
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
@@ -93,40 +92,12 @@ def evaluate(
     logging.info(f"R-Squared: {r2}")
 
 
-def save_model(model: RandomForestRegressor) -> None:
+def save_model(model: RandomForestRegressor, save_path: str) -> None:
     """Save the trained model using pickle into the models folder.
 
     Args:
         model (RandomForestRegressor): the trained model to be saved
+        save_path (str): the path to save the trained model
     """
-    with open("models/model.pkl", "wb") as f:
+    with open(save_path, "wb") as f:
         pickle.dump(model, f)
-
-
-if __name__ == "__main__":
-    setup_logger()
-
-    data_path = "datasets/house_price_random_forest/reference.csv"
-    features = [
-        "bedrooms",
-        "bathrooms",
-        "sqft_living",
-        "sqft_lot",
-        "floors",
-        "waterfront",
-        "view",
-        "condition",
-        "grade",
-        "yr_built",
-    ]
-    target = "price"
-    test_size = 0.2
-
-    x_train, x_test, y_train, y_test = prepare_data(
-        data_path, features, target, test_size
-    )
-
-    model = model_setup()
-    train(model, x_train, y_train)
-    evaluate(model, x_test, y_test)
-    save_model(model)
