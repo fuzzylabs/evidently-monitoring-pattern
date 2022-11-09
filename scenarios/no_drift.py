@@ -24,7 +24,7 @@ def request_no_drift_prediction(
     for _, row in dataset.iterrows():
         features = row.to_json(orient="index")
         features = json.loads(features)
-        logging.info(f"Sending a request")
+        logging.info("Sending a request")
 
         try:
             requests.post(model_server_url, json=features)

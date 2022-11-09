@@ -6,10 +6,14 @@ import pickle
 import numpy as np
 import requests
 from flask import Flask, request
-from setup_logger import setup_logger
 from sklearn.ensemble import RandomForestRegressor
 
 app = Flask(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 
 # The encoder converts NumPy types in source data to JSON-compatible types
@@ -53,7 +57,7 @@ def load_model() -> RandomForestRegressor:
 
     with open(model_path, "rb") as f:
         MODEL = pickle.load(f)
-    logging.info(f"Model loaded")
+    logging.info("Model loaded")
 
     return MODEL
 
@@ -118,7 +122,7 @@ def send_pred_to_metric_server(pred_price: float) -> None:
         "http://evidently_service:8085/iterate/house_price_random_forest"
     )
 
-    logging.info(f"Sending predictions to metric server.")
+    logging.info("Sending predictions to metric server.")
     try:
         response = requests.post(
             metric_server_url,
@@ -127,7 +131,7 @@ def send_pred_to_metric_server(pred_price: float) -> None:
         )
 
         if response.status_code == 200:
-            logging.info(f"Success.")
+            logging.info("Success.")
 
         else:
             logging.Error(
@@ -136,10 +140,9 @@ def send_pred_to_metric_server(pred_price: float) -> None:
             )
 
     except requests.exceptions.ConnectionError:
-        logging.error(f"Cannot reach the metric server")
+        logging.error("Cannot reach the metric server")
 
 
 if __name__ == "__main__":
-    setup_logger()
     MODEL = load_model()
     app.run(host="0.0.0.0", port="5050", debug=True)
