@@ -24,10 +24,14 @@ def prepare_data(
 
     Returns:
         Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: the x and y for train and test split
+
+    Raises:
+        FileNotFoundError: If reference dataset not exists in datasets/
     """
     if not os.path.exists(data_path):
-        logging.error(f"Reference data does not exists in path: {data_path}")
-        exit("Failed to load data")
+        raise FileNotFoundError(
+            f"Reference data not found in path: {data_path}"
+        )
 
     logging.info("Preparing data for train and test")
     df = pd.read_csv(data_path, index_col="date")

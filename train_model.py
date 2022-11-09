@@ -1,12 +1,18 @@
 """Train a random forest regressor using the reference dataset."""
 from config.config import logger
-from pipeline.train import prepare_data, model_setup, train, evaluate, save_model
+from pipeline.train import (
+    evaluate,
+    model_setup,
+    prepare_data,
+    save_model,
+    train,
+)
 
 if __name__ == "__main__":
     # Path to the reference dataset
     data_path = "datasets/house_price_random_forest/reference.csv"
     # Path for saving the trained model
-    save_path = "models/model.pkl" 
+    save_path = "models/model.pkl"
 
     # Selecting portion of all features to be used for training
     features = [
