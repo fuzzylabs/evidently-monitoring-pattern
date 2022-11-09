@@ -24,9 +24,8 @@ from evidently.runner.loader import (  # Set a column for date, header and separ
 )
 from flask import Flask, request
 from prometheus_client import Gauge
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-
 from setup_logger import setup_logger
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 app = Flask(__name__)
 

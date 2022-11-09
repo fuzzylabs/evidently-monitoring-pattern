@@ -6,11 +6,10 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
+from setup_logger import setup_logger
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-
-from setup_logger import setup_logger
 
 
 def prepare_data(

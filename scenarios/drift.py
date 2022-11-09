@@ -7,11 +7,9 @@ import time
 import pandas as pd
 import requests
 
-from setup_logger import setup_logger
 
-
-def request_prediction(sleep_timeout: int, model_server_url: str) -> None:
-    """Send an instance from the production.csv to the inference server after each sleep time out.
+def request_drift_prediction(sleep_timeout: int, model_server_url: str) -> None:
+    """Send an instance from the production_with_drift.csv to the inference server after each sleep time out.
 
     Args:
         sleep_timeout (int): seconds to wait before requesting the next row for inference
@@ -66,7 +64,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    setup_logger()
-
     model_server_url = "http://127.0.0.1:5050/predict"
-    request_prediction(args.timeout, model_server_url)
+    request_drift_prediction(args.timeout, model_server_url)

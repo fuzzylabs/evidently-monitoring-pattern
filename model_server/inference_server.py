@@ -6,9 +6,8 @@ import pickle
 import numpy as np
 import requests
 from flask import Flask, request
-from sklearn.ensemble import RandomForestRegressor
-
 from setup_logger import setup_logger
+from sklearn.ensemble import RandomForestRegressor
 
 app = Flask(__name__)
 
