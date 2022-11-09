@@ -1,6 +1,6 @@
 # Introduction
 
-This repo is a complete demo of real-time data monitoring using Evidently. Using a Random Forest Regressor to predict house prices and simulate data drift by sending drifted feature(s) to the model. Evidently calculates the metrics for data drift, send them to Prometheus and demonstrate these on a pre-built Grafana dashboard.
+This repo is a complete demo of real-time data monitoring using Evidently. Using a Random Forest Regressor to predict house prices and simulate data drift by sending drifted feature(s) to the model. Evidently calculates the metrics for data drift, send them to Prometheus and visualize the results on a pre-built Grafana dashboard.
 
 # Contents
 
@@ -14,45 +14,49 @@ This repo is a complete demo of real-time data monitoring using Evidently. Using
 
 Within the repo, you will find:
 
-* [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a Kaggle house sale prices dataset for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
+- [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a Kaggle house sale prices dataset for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `generate_dataset_for_demo.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
 
     NOTE: The Kaggle dataset has been uploaded to Google Drive for easy access.
-* [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
-* [`inference_server`](model_server): a model server that exposes our house price model through a REST API.
-* [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
-* [`scenarios`](scenarios): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
-* [`dashboards`](dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
-* A [`run_demo_no_drift.py`](run_demo_no_drift.py) script to run the demo **with no data drift** using docker compose.
-* A [`run_demo_drift.py`](run_demo_drift.py) script to run the demo **with data drift** using docker compose.
-* A docker-compose file to run the whole thing.
+- [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
+- [`inference_server`](model_server): a model server that exposes our house price model through a REST API.
+- [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
+- [`scenarios`](scenarios): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
+- [`dashboards`](dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
+- A [`run_demo_no_drift.py`](run_demo_no_drift.py) script to run the demo **with no data drift** using docker compose.
+- A [`run_demo_drift.py`](run_demo_drift.py) script to run the demo **with data drift** using docker compose.
+- A docker-compose file to run the whole thing.
 
-# Running locally
+# Running demo
 
 ## Pre-requisites
 
-You'll need Python 3, and Docker and Docker Compose V2.
+You'll need following pre-requisites to run the demo:
+
+- [Python 3](https://www.python.org/downloads/)
+- [Docker](https://docs.docker.com/engine/install/)
+- [Docker Compose V2](https://docs.docker.com/compose/install/linux/).
 
 ## Getting started
 
-1. **Download and install [Docker](https://www.docker.com/) if you don't have it.**
+1. Clone this repo:
 
-2. **Clone this repo:**
-```bash
-git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
-```
+    ```bash
+    git clone git@github.com:fuzzylabs/evidently-monitoring-demo.git
+    ```
 
-3. **Go to the demo directory:**
-```bash
-cd evidently-monitoring-demo
-```
+2. Go to the demo directory:
 
-4. **Create a new Python virtual environment and activate it.** For Linux/MacOS users:
+    ```bash
+    cd evidently-monitoring-demo
+    ```
 
-```bash
-python3 -m venv demoenv
-source demoenv/bin/activate
-pip install -r requirements.txt
-```
+3. Create a new Python virtual environment and activate it. For Linux/MacOS users:
+
+    ```bash
+    python3 -m venv demoenv
+    source demoenv/bin/activate
+    pip install -r requirements.txt
+    ```
 
 ## Jupyter Notebook or Terminal
 
@@ -60,56 +64,57 @@ From this point, you have the option to continue the demo by following the instr
 
 ## Download and prepare data for the model
 
-1. **Run the `download_dataset.py` script**: <a name="step2"></a>
+1. Run the `download_dataset.py` script:
 
-```bash
-python download_dataset.py
-```
+    ```bash
+    python download_dataset.py
+    ```
 
-This will download and save the data from Google drive.
+    This script will download and preprocess the data from Google drive.
 
-3. **Split the dataset into production and reference**:
+2. Split the dataset into production and reference:
 
-```bash
-python prepare_dataset.py
-```
+    ```bash
+    python prepare_dataset.py
+    ```
 
-This will split the dataset into 1 reference and 2 production datasets, 1 with drifted data and 1 without.
+    This script will split the dataset into 1 reference and 2 production datasets (with drift data and  without drift data).
 
 ## Training the Random Forest Regressor
 
-1. **Run the `train_model.py` script to train the model**:
+- Run the `train_model.py` script to train the model:
 
-```bash
-python train_model.py
-```
-- Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
+    ```bash
+    python train_model.py
+    ```
+
+    Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
 
 ## Running the demo
 
-**At the moment, there are two scenarios we can simulate by running the demo:**
+At the moment, there are two scenarios we can simulate by running the demo:
 
 - **Scenario 1:** No data drift
 
-```bash
-python run_demo.py --no-drift
-```
+    ```bash
+    python run_demo.py --no-drift
+    ```
 
 OR
 
 - **Scenario 2:** Data drift
 
-```bash
-python run_demo.py --drift
-```
+    ```bash
+    python run_demo.py --drift
+    ```
 
 Once docker compose is running, the demo will start sending data to the inference server for price prediction which will then be monitored by the Evidently metric server.
 
 The metric server will receive the price prediction along with the feature(s) (model inputs) used for the prediction. The features are used to monitor data drift by Evidently using the data drift monitor.
 
-The metrics produced by Evidently will be logged to Prometheus's database which will be available at port 9090. To access Prometheus web interface, go to your browser and open: http://localhost:9090/
+The metrics produced by Evidently will be logged to Prometheus's database which will be available at port 9090. To access Prometheus web interface, go to your browser and open: <http://localhost:9090/>
 
-To visualise these metrics, Grafana is connected to Prometheus's database to collect data for the dashboard. Grafana will be available at port 3030. To access Grafana web interface, go to your browser and open: http://localhost:3000/ . If this is your **first time using Grafana**, you will be asked to enter a username and password, by default, both the username and password is "admin".
+To visualise these metrics, Grafana is connected to Prometheus's database to collect data for the dashboard. Grafana will be available at port 3030. To access Grafana web interface, go to your browser and open: <http://localhost:3000/> . If this is your **first time using Grafana**, you will be asked to enter a username and password, by default, both the username and password is "admin".
 
 To stop the demo, press ctrl+c and shut down docker compose by running the following command:
 
@@ -119,7 +124,7 @@ python run_demo.py --stop
 
 # How does the demo work?
 
-![Flow](images/Monitoring_Flow_Chart.png)
+![Flow](docs/assets/images/Monitoring_Flow_Chart.png)
 
 The demo is comprised of 5 core components:
 
@@ -151,18 +156,18 @@ Once the datasets are generated, the Random Forest Regressor is trained using th
 
 Distribution comparison between the reference datasets and the **non-drifted** production dataset:
 
-![NoDriftHistogram](images/No_Drift_Histogram.png)
+![NoDriftHistogram](docs/assets/images/No_Drift_Histogram.png)
 
 Distribution comparison between the reference datasets and the **drifted** production dataset:
 
-![DriftHistogram](images/Drift_Histogram.png)
+![DriftHistogram](docs/assets/images/Drift_Histogram.png)
 
 ## The dashboards
 
-![Drift](images/No_Drift.png)
+![Drift](docs/assets/images/No_Drift.png)
 
 - When the no data drift scenario is running, the Grafana's dashboard should show no data drift is detected. However, as there are some randomness in dataset generation, it is possible to see data drift every once a while.
 
-![Drift](images/Data_Drift.png)
+![Drift](docs/assets/images/Data_Drift.png)
 
 - When the data drift scenario is running, Grafana's dashboard should show data drift at a relatively constant time frame, e.g. no data drift for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
