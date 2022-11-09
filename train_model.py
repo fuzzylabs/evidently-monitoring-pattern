@@ -1,5 +1,6 @@
 """Train a random forest regressor using the reference dataset."""
 import os
+
 from config.config import logger
 from pipeline.train import (
     evaluate,
