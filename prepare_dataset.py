@@ -1,13 +1,14 @@
+"""Prepare 3 datasets (reference, production with drift, production with no drift)."""
 import os
+
+from config.config import logger
 from data.generate_dataset_for_demo import (
     create_data_simulator,
-    generate_reference_data,
     generate_production_data,
     generate_production_no_drift_data,
     generate_production_with_drift_data,
+    generate_reference_data,
 )
-from config.config import logger
-
 
 if __name__ == "__main__":
     logger.info("Generating reference data")
@@ -36,7 +37,10 @@ if __name__ == "__main__":
     ]
     # select first 1000 rows and select features to get reference dataset from original dataset
     reference_df = generate_reference_data(
-        dataset_path=dataset_path, features=features, no_rows=1000, save_dir=save_dir
+        dataset_path=dataset_path,
+        features=features,
+        no_rows=1000,
+        save_dir=save_dir,
     )
     # get production dataset
     production_df = generate_production_data(reference_df=reference_df)

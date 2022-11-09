@@ -1,74 +1,87 @@
-from typing import Tuple
-import pandas as pd
-import numpy as np
+"""Model training."""
 import logging
-import pickle
 import os
+import pickle
+from typing import Tuple
 
-from sklearn.model_selection import train_test_split
+import numpy as np
+import pandas as pd
+from setup_logger import setup_logger
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
 
-def setup_logger() -> None:
-    logging.basicConfig(
-        level=logging.INFO, 
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.StreamHandler()
-        ]
-    )
 
-def prepare_data() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    '''
-    Load the downloaed dataset into a pandas dataframe.
+def prepare_data(
+    data_path: str, features: list, target: str, test_size: float
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Load, selected features and split dataset into train and test.
 
-    Select features that will be used to train the regression model.
+    Args:
+        data_path (str): the path of the reference dataset
+        features (list): features to be used
+        target (str): the name of the target
+        test_size (float): the test_size for train test split
 
-    Split and return the dataset into train and test set using a 80/20 ratio.
-    '''
-    data_path = "datasets/house_price_random_forest/reference.csv"
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: the x and y for train and test split
+    """
     if not os.path.exists(data_path):
         logging.error(f"Reference data does not exists in path: {data_path}")
         exit("Failed to load data")
-    
+
     logging.info("Preparing data for train and test")
-    df = pd.read_csv(data_path, index_col='date')
-    target = 'price'
-    prediction = 'predicted_price'
-    datetime = 'date'
+    df = pd.read_csv(data_path, index_col="date")
 
-    features = ['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors',
-        'waterfront', 'view', 'condition', 'grade', 'yr_built']
-
-    X = df[features].values
+    x = df[features].values
     y = df[target].values
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=28)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=test_size, random_state=28
+    )
 
-    return X_train, X_test, y_train, y_test
+    return x_train, x_test, y_train, y_test
 
-def model_setup():
-    '''
-    Initalise and return the regression model.
-    '''
+
+def model_setup() -> RandomForestRegressor:
+    """Initalise and return the regression model.
+
+    Returns:
+        RandomForestRegressor: a random forest regressor
+
+    """
     logging.info("Creating Random Forest Regressor model")
     model = RandomForestRegressor(random_state=28, verbose=1)
     return model
 
-def train(model, X_train, y_train) -> None:
-    '''
-    Fit the model using the train set.
-    '''
+
+def train(
+    model: RandomForestRegressor, x_train: np.ndarray, y_train: np.ndarray
+) -> None:
+    """Fit the model using the train set.
+
+    Args:
+        model (RandomForestRegressor): the model to be trained
+        x_train (np.ndarray): the training dataset
+        y_train (np.ndarray): the ground truth of the training dataset
+    """
     logging.info("Training model")
-    model.fit(X_train, y_train)
+    model.fit(x_train, y_train)
     logging.info("Training Completed")
 
-def evaluate(model, X_test, y_test) -> None:
-    '''
-    Evaluate the model and show the metrics.
-    '''
+
+def evaluate(
+    model: RandomForestRegressor, x_test: np.ndarray, y_test: np.ndarray
+) -> None:
+    """Evaluate the model and show the metrics.
+
+    Args:
+        model (RandomForestRegressor): the trained model to be evaluated
+        x_test (np.ndarray): the testing dataset
+        y_test (np.ndarray): the ground truth of the testing dataset
+    """
     logging.info("Evaluating model on test set")
-    predictions = model.predict(X_test)
+    predictions = model.predict(x_test)
     mse = mean_squared_error(y_test, predictions)
     mae = mean_absolute_error(y_test, predictions)
     rmse = mean_squared_error(y_test, predictions, squared=False)
@@ -79,17 +92,41 @@ def evaluate(model, X_test, y_test) -> None:
     logging.info(f"Root Mean Squared Error: {rmse}")
     logging.info(f"R-Squared: {r2}")
 
-def save_model(model) -> None:
-    '''
-    Save the trained model using pickle into the models folder.
-    '''
-    with open('models/model.pkl','wb') as f:
+
+def save_model(model: RandomForestRegressor) -> None:
+    """Save the trained model using pickle into the models folder.
+
+    Args:
+        model (RandomForestRegressor): the trained model to be saved
+    """
+    with open("models/model.pkl", "wb") as f:
         pickle.dump(model, f)
+
 
 if __name__ == "__main__":
     setup_logger()
-    X_train, X_test, y_train, y_test = prepare_data()
+
+    data_path = "datasets/house_price_random_forest/reference.csv"
+    features = [
+        "bedrooms",
+        "bathrooms",
+        "sqft_living",
+        "sqft_lot",
+        "floors",
+        "waterfront",
+        "view",
+        "condition",
+        "grade",
+        "yr_built",
+    ]
+    target = "price"
+    test_size = 0.2
+
+    x_train, x_test, y_train, y_test = prepare_data(
+        data_path, features, target, test_size
+    )
+
     model = model_setup()
-    train(model, X_train, y_train)
-    evaluate(model, X_test, y_test)
+    train(model, x_train, y_train)
+    evaluate(model, x_test, y_test)
     save_model(model)

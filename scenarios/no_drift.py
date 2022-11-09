@@ -1,40 +1,43 @@
-"""No Drift scenario to request predictions."""
-import logging
+"""Simulate a scenario with no data drift."""
 import argparse
 import json
+import logging
 import time
+
 import pandas as pd
 import requests
 
 
-model_server_url = "http://127.0.0.1:5050/predict"
-dataset_path = "datasets/house_price_random_forest/production_no_drift.csv"
-
-
-def request_prediction(sleep_timeout: int) -> None:
+def request_no_drift_prediction(
+    sleep_timeout: int, model_server_url: str
+) -> None:
     """Send an instance from the production_no_drift.csv to the inference server after each sleep time out.
 
     Args:
-        sleep_timeout (int) : Timeout in seconds between each request.
+        sleep_timeout (int): seconds to wait before requesting the next row for inference
+        model_server_url (str): the address of the inference server
     """
+    dataset_path = "datasets/house_price_random_forest/production_no_drift.csv"
+
     dataset = pd.read_csv(dataset_path)
 
     for _, row in dataset.iterrows():
         features = row.to_json(orient="index")
         features = json.loads(features)
-        logging.info("Sending a request")
+        logging.info(f"Sending a request")
 
         try:
-            r = requests.post(model_server_url, json=features)
-            logging.info(f"Waiting for {sleep_timeout} seconds till next request.")
+            requests.post(model_server_url, json=features)
+            logging.info(
+                f"Waiting for {sleep_timeout} seconds till next request."
+            )
             time.sleep(sleep_timeout)
-        except requests.exceptions.ConnectionError as e:
+
+        except requests.exceptions.ConnectionError:
             logging.error("Cannot reach the inference server.")
-            raise e
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(
         description="Script for data sending to Evidently metrics integration demo service"
     )
@@ -48,11 +51,18 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "-H", "--host", type=str, default="127.0.0.1", help="Server host address"
+        "-H",
+        "--host",
+        type=str,
+        default="127.0.0.1",
+        help="Server host address",
     )
 
-    parser.add_argument("-p", "--port", type=str, default="5050", help="Port of host")
+    parser.add_argument(
+        "-p", "--port", type=str, default="5050", help="Port of host"
+    )
 
     args = parser.parse_args()
-    # send data to inference serverr
-    request_prediction(args.timeout)
+
+    model_server_url = "http://127.0.0.1:5050/predict"
+    request_no_drift_prediction(args.timeout, model_server_url)

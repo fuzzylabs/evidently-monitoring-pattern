@@ -1,7 +1,7 @@
 """Run drift/no-drift demo."""
+import argparse
 import os
 import time
-import argparse
 
 from config.config import logger
 from utils.docker_utils import (

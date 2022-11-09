@@ -1,6 +1,7 @@
 """Generate reference and production dataset with 2 scenarios (drift/no-drift) for data monitoring."""
 import logging
 import os
+
 import pandas as pd
 
 from .prob_distribution import ProbDistribution
@@ -23,7 +24,9 @@ def laod_data(dataset_path: str, features: list, no_rows: int) -> pd.DataFrame:
     )
     # select specific features
     df = df[features]
-    logging.info(f"Using first {no_rows} rows from total {len(df)} rows of the dataset")
+    logging.info(
+        f"Using first {no_rows} rows from total {len(df)} rows of the dataset"
+    )
     # select specific rows
     df = df[0:no_rows]
     return df
@@ -57,12 +60,13 @@ def compute_dist(feature: pd.Series) -> dict:
 def generate_reference_data(
     dataset_path: str, features: list, no_rows: int, save_dir: str
 ) -> pd.DataFrame:
-    """Generate reference data used by Evidently as reference
+    """Generate reference data used by Evidently as reference.
 
     Args:
-        df (pd.DataFrame): the dataset
-        features (list): the features to generate reference data for
-        save_dir (str): path tot save generated reference at
+        dataset_path (str): the dataset path
+        features (list): a list of features to use from the orignal dataset
+        no_rows (int): number of rows to use
+        save_dir (str): path to save generated dataset
 
     Returns:
         pd.DataFrame: a pandas dataframe containing the dataset

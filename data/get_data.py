@@ -1,7 +1,8 @@
 """Download data from Google drive and preprocess dataset."""
 import logging
-import zipfile
 import os
+import zipfile
+
 import gdown
 import pandas as pd
 
@@ -23,7 +24,6 @@ def preprocess_dataset(output_path: str) -> None:
 
     Args:
         output_path (str): the path to the output file
-
     """
     # Extract dataset
     logging.info("Extracting dataset zip file")

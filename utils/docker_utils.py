@@ -10,21 +10,22 @@ def check_docker_installation():
     docker_version_result = os.system("docker -v")
 
     if docker_version_result:
-        exit("Docker was not found. Try to install it with https://www.docker.com")
+        exit(
+            "Docker was not found. Try to install it with https://www.docker.com"
+        )
 
 
 def running_grafana_prometheus_docker_compose_services() -> bool:
     """Check if granfana and prometheus services are running in docker compose.
 
-    Returns True if grafana and prometheus services are running in docker compose.
+    Returns:
+        bool:  if grafana and prometheus services are running in docker compose.
     """
     grafana_command = "docker compose ps -q grafana --status=running"
     prometheus_command = "docker compose ps -q prometheus --status=running"
-    if (os.system(grafana_command) is not None) and (
-        os.system(prometheus_command) is not None
-    ):
+    if (os.system(grafana_command) is not None) and (os.system(prometheus_command) is not None):  # fmt: skip
         # TODO: why 256 here?
-        if os.system(grafana_command) == 256 and os.system(prometheus_command) == 256:
+        if (os.system(grafana_command) == 256 and os.system(prometheus_command) == 256):  # fmt: skip
             return False
         return True
     return False
@@ -37,7 +38,9 @@ def run_docker_compose():
         logging.info("Running docker compose")
         run_script(cmd=["docker", "compose", "up", "-d"], wait=True)
     else:
-        logging.info("Found services : ['prometheus', 'grafana'] already running...")
+        logging.info(
+            "Found services : ['prometheus', 'grafana'] already running..."
+        )
 
 
 def run_script(cmd: list, wait: bool) -> None:
@@ -49,7 +52,9 @@ def run_script(cmd: list, wait: bool) -> None:
 
     """
     logging.info("Run %s", " ".join(cmd))
-    script_process = subprocess.Popen(" ".join(cmd), stdout=subprocess.PIPE, shell=True)
+    script_process = subprocess.Popen(
+        " ".join(cmd), stdout=subprocess.PIPE, shell=True
+    )
 
     if wait:
         script_process.wait()
@@ -59,6 +64,6 @@ def run_script(cmd: list, wait: bool) -> None:
 
 
 def stop_docker_compose():
-    """Stop docker compose"""
+    """Stop docker compose."""
     os.system("docker compose down")
     run_script(cmd=["docker", "volume", "rm $(docker volume ls -q)"], wait=True)
