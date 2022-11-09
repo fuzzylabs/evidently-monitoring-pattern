@@ -6,11 +6,14 @@ import pickle
 import numpy as np
 import requests
 from flask import Flask, request
-from setup_logger import setup_logger
 from sklearn.ensemble import RandomForestRegressor
 
 app = Flask(__name__)
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 # The encoder converts NumPy types in source data to JSON-compatible types
 class NumpyEncoder(json.JSONEncoder):
@@ -140,6 +143,5 @@ def send_pred_to_metric_server(pred_price: float) -> None:
 
 
 if __name__ == "__main__":
-    setup_logger()
     MODEL = load_model()
     app.run(host="0.0.0.0", port="5050", debug=True)

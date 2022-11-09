@@ -28,9 +28,10 @@ from prometheus_client import Gauge
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 app = Flask(__name__)
-
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler()]
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
 )
 
 # Add prometheus wsgi middleware to route /metrics requests
