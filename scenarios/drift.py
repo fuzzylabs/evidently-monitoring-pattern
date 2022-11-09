@@ -24,7 +24,7 @@ def request_drift_prediction(sleep_timeout: int, model_server_url: str) -> None:
     for _, row in dataset.iterrows():
         features = row.to_json(orient="index")
         features = json.loads(features)
-        logging.info(f"Sending a request")
+        logging.info("Sending a request")
 
         try:
             requests.post(model_server_url, json=features)
@@ -34,7 +34,7 @@ def request_drift_prediction(sleep_timeout: int, model_server_url: str) -> None:
             time.sleep(sleep_timeout)
 
         except requests.exceptions.ConnectionError:
-            logging.error(f"Cannot reach the inference server.")
+            logging.error("Cannot reach the inference server.")
 
 
 if __name__ == "__main__":
