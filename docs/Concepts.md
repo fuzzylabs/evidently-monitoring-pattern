@@ -11,6 +11,11 @@ The demo is comprised of 5 core components:
 - [Evidently server](#evidently-server)
 - [Prometheus](#prometheus)
 - [Grafana](#grafana)
+  - [How to read dashboards](#how-to-read-dashboards)
+    - [No drift Scenario](#no-drift-scenario)
+    - [Drift Scenario](#drift-scenario)
+
+We will go through each component in great detail.
 
 ## Scenarios
 
@@ -83,13 +88,21 @@ To simplify this demo and make it easier to understand what is happening, we are
 
 ## Grafana
 
-- Grafana: this is what we can use to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the [`dashboards`](dashboards) directory.
+Grafana is open source project that helps creating beatiful dashboards for visualizing different metrics. We can use it to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the [`dashboards`](../dashboards) directory.
 
-### The dashboards
+Once the application is started, you can see the results on Grafana dashboard at <http://localhost:3000/>. The default login credentials are username: admin and password: admin.
 
-![Drift](assets/images/No_Drift.png)
+To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results.
 
-- When the no data drift scenario is running, the Grafana's dashboard should show no data drift is detected. However, as there are some randomness in dataset generation, it is possible to see data drift every once a while.
+### How to read dashboards?
+
+#### No Drift Scenario
+
+![No Drift](assets/images/No_Drift.png)
+
+When the no data drift scenario is running, the Grafana's dashboard should show no data drift is detected. This can be monitored by looking at the "# of drifted features" block in the Grafana dashboard. The no drift scenario shows that currently there are 2 features and no drift is detected for either of features.
+
+#### Drift Scenario
 
 ![Drift](assets/images/Data_Drift.png)
 
