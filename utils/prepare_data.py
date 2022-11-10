@@ -44,17 +44,22 @@ def compute_dist(feature: pd.Series) -> dict:
     Returns:
         dict: the distribution
     """
+    # Converting a 1D pandas data structure to a list
     feature_list = feature.to_list()
+    # Count the number of values in the list
     feature_count = len(feature_list)
 
+    # A dictonary to store the probability distribution
     dist = {}
 
+    # Compute the occurance of each distinct value in the list
     for val in feature_list:
         if val in dist:
             dist[val] += 1
         else:
             dist[val] = 1
 
+    # Compute the probabilty distribution for each distinct value store in dictonary
     dist = {key: val / feature_count for key, val in dist.items()}
 
     return dist
