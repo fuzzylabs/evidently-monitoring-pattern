@@ -14,7 +14,7 @@ The demo is comprised of 5 core components:
 
 ### How are the data generated?
 
-This demo makes use of the Kaggle dataset [House Sales in King County, USA](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction). The dataset includes homes from between May 2014 to May 2015. The dataset contains 21,613 rows and 21 columns that represent the features of the homes sold. The Kaggle dataset has been uploaded to Google Drive for easy acces using [gdown](https://pypi.org/project/gdown/), so we don't need to generate and add the Kaggle API key as environment variables for using the Kaggle API.
+This demo makes use of the Kaggle dataset [House Sales in King County, USA](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction). The dataset includes homes from between May 2014 to May 2015. The dataset contains 21,613 rows and 21 columns that represent the features of the homes sold. The Kaggle dataset has been uploaded to Google Drive for easy acces and that we don't need to generate and add the Kaggle API key as environment variables for using the Kaggle API.
 
 - [download_dataset.py](download_dataset.py): This script uses 2 functions from [data/get_data.py](data/get_data.py), the "download_dataset" and "preprocess_dataset function".
 
@@ -30,27 +30,25 @@ This demo makes use of the Kaggle dataset [House Sales in King County, USA](http
 
     The distribution of each feature is computed using the the "compute_dist" function which returns a dictionary of probabilty distribution. For example, if 50% of the bedroom has a value of 2, 30% has a value of 3 and 20% has a value of 4. Then, the "compute_dist" function would return a dictionary of {2: 0.5, 3: 0.3, 4: 0.2}. For the no data drift production dataset, the number of bedrooms and the condition feature for each row of data is generated using the same distribution as the reference dataset to ensure that no data drift will be detected.
 
-    These feature distribution will be used to create a value generator object using the ProbDistribution class within the [prob_distribution.py](prob_distribution.py). When a generator object is initialised, it will compute a skewed distribution based on the orginal probability distribution. For example, using the example bedroom distribution {2: 0.5, 3: 0.3, 4: 0.2}. The generator will skew the distribtuion by changing the probability of each value. To ensure drift will be detected for this demo, the value with the lowest probability will have a proability of 1 after skewed. The skewed distribution will be stored as a dictionary {2: 0.0, 3: 0.0, 4: 1.0} as an attribute of the generator object.
+    These feature distribution will be used to create a value generator object using the ProbDistribution class within the [prob_distribution.py](../utils/prob_distribution.py). When a generator object is initialised, it will compute a skewed distribution based on the orginal probability distribution. For example, using the example bedroom distribution {2: 0.5, 3: 0.3, 4: 0.2}. The generator will skew the distribtuion by changing the probability of each value. To ensure drift will be detected for this demo, the value with the lowest probability will have a proability of 1 after skewed. The skewed distribution will be stored as a dictionary {2: 0.0, 3: 0.0, 4: 1.0} as an attribute of the generator object.
 
 ### Histogram visualisation
 
 #### Distribution comparison between the reference datasets and the **non-drifted** production dataset
 
-    ![NoDriftHistogram](docs/assets/images/No_Drift_Histogram.png)
+    ![NoDriftHistogram](assets/images/No_Drift_Histogram.png)
 
     The histogram above shows that for the bedroom feature, 7 bedrooms appears the least meaning that it has the lowest probabilty of being generated in the no data drift production dataset.
 
 #### Distribution comparison between the reference datasets and the **drifted** production dataset
 
-    ![DriftHistogram](docs/assets/images/Drift_Histogram.png)
+    ![DriftHistogram](assets/images/Drift_Histogram.png)
 
     The histogram above shows that for the bedroom feature, 7 bedrooms appears much more frequently compare to the no data drift production dataset.
 
     Once the datasets are generated, the Random Forest Regressor is trained using the reference dataset with [train.py](train.py).
 
-### Scenario scripts
-
-- Within the [`scenarios`](scenarios) folder, it contains two scripts namely [`drift.py`](scenarios/drift.py) and [`no_drift.py`](scenarios/no_drift.py). Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data.
+Within the [`scenarios`](../scenarios) folder, it contains two scripts namely [`drift.py`](../scenarios/drift.py) and [`no_drift.py`](../scenarios/no_drift.py). Both scripts send production data to the model server for price prediction. The difference between the two is that one would send data from the `production_no_drift.csv` and the other would send data from the `production_with_drift.csv` which contains drifted data.
 
 ## Inference server
 
