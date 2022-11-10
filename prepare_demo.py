@@ -38,7 +38,11 @@ def get_features(is_train) -> list:
         "yr_built",
         "price",
     ]
-    return features if is_train else features.remove("price", "date")
+    return (
+        features
+        if is_train
+        else features.remove([x for x in ["price", "date"]])
+    )
 
 
 def create_dir(path_dir: str):
