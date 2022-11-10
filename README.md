@@ -123,7 +123,7 @@ To stop this scenario, press control+c together. This will act as a Keyboard Int
 Let us now start with a **drift scenario**. The reference dataset and drift dataset come from a different distribution. Hence, Evidently library will notice a drift and alert with number of features drifted on the Grafana dashboard.
 
 ```bash
-python run_demo.py --drift
+python run_demo.py --drift  # press control+c to stop this scenario
 ```
 
 This will use the already running container for Evidently, Prometheus and Grafana. The drift detection results will be shown on Grafana dashboard at <http://localhost:3000>.
