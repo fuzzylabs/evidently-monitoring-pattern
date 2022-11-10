@@ -122,7 +122,7 @@ To see the monitoring dashboard in the Grafana interface, click "General" and na
 
 ![No Drift](docs/assets/images/example_no_drift.png)
 
-To stop this scenario, `press control+c` together. This will act as a Keyboard Interrupt. All the container will still remain running in the background as we did not stop the docker compose application yet.
+To stop this scenario, press `control+c` together. This will act as a Keyboard Interrupt. All the container will still remain running in the background as we did not stop the docker compose application yet.
 
 ### Drift Scenario
 
