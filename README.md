@@ -107,7 +107,7 @@ In this demo, we will perform ML monitoring using Evidently, Prometheus and Gran
 Let us first start with a **no-drift scenario**. The reference dataset and no drift dataset have same distribution.
 
 ```bash
-python run_demo --no-drift  # press control+c to stop this scenario
+python run_demo.py --no-drift  # press control+c to stop this scenario
 ```
 
 This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together. Once the application is started, you can see the results on Grafana dashboard at <http://localhost:3000/>. The default login credentials are username: admin and password: admin.
