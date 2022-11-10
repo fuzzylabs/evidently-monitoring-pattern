@@ -4,6 +4,6 @@ WORKDIR /app
 
 RUN pip3 install evidently flask prometheus-client PyYAML pandas
 
-COPY monitoring_server .
+COPY server/monitoring_server .
 
 CMD ["python", "metric_server.py"]
