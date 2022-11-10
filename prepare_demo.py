@@ -41,7 +41,7 @@ def get_features(is_train) -> list:
     return (
         features
         if is_train
-        else [x for x in features if x not in ["price", "date"]]
+        else [x for x in features if x not in ("price", "date")]
     )
 
 
