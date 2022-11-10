@@ -70,6 +70,7 @@ if __name__ == "__main__":
         elif args.no_drift:
             logger.info("Sending non drifted data")
             os.system("python scenarios/no_drift.py")
+        logger.info("Visit http://localhost:3000/ for Grafana dashboard")
     except KeyboardInterrupt:
         logger.info("Interrupt detected.")
     # Stop docker compose

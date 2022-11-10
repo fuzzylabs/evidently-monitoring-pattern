@@ -3,14 +3,13 @@ import logging
 import os
 import zipfile
 
-import pandas as pd
-
 import gdown
+import pandas as pd
 
 from .prob_distribution import ProbDistribution
 
 
-def laod_data(dataset_path: str, features: list, no_rows: int) -> pd.DataFrame:
+def load_data(dataset_path: str, features: list, no_rows: int) -> pd.DataFrame:
     """Loads the dataset from the `dataset_path`,  select the `features` and number of rows upto `no_rows`.
 
     Args:
@@ -80,7 +79,7 @@ def generate_reference_data(
         pd.DataFrame: a pandas dataframe containing the dataset
     """
     # load data with specific features and upto specified number of rows
-    reference_df = laod_data(
+    reference_df = load_data(
         dataset_path=dataset_path, features=features, no_rows=no_rows
     )
     # save reference dataset
@@ -206,6 +205,7 @@ def generate_production_with_drift_data(
     logging.info(f"Saved production data with drift at path: {save_path}")
     return production_df
 
+
 def download_dataset(url: str, output: str) -> None:
     """Download the dataset using the gdown library.
 
@@ -218,16 +218,19 @@ def download_dataset(url: str, output: str) -> None:
     gdown.download(url, output, quiet=False)
 
 
-def preprocess_dataset(dataset_path: str) -> None:
+def preprocess_dataset(dataset_path: str) -> str:
     """Unzip dataset and set the date column as index and saves the dataset as csv.
 
     Args:
         dataset_path (str): the path to the downloaded zip dataset file
+
+    Returns:
+        str: Path to preprocessed data
     """
-    # Extract dataset
+    # Extract dataset to dataset_path directory
     logging.info("Extracting dataset zip file")
     with zipfile.ZipFile(dataset_path, "r") as zip_ref:
-        zip_ref.extractall("data")
+        zip_ref.extractall(os.path.dirname(dataset_path))
 
     logging.info(f"Downloaded dataset at path: {dataset_path}")
     logging.info("Processing data...")
@@ -245,3 +248,4 @@ def preprocess_dataset(dataset_path: str) -> None:
     save_path = os.path.join(root_dir, new_filename)
     house_data.to_csv(save_path)
     logging.info(f"Saved processed dataset at path: {save_path}")
+    return save_path

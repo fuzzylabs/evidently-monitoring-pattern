@@ -21,14 +21,14 @@ This repository is a complete demo of real-time data monitoring using Evidently.
 
 Within the repo, you will find:
 
-- [`data`](data): contains two scripts. Running the `get_data.py` will automatically download a Kaggle house sale prices dataset for model training and data monitoring (drift monitoring); the dataset is saved to this directory. The `preppare_dataset.py` script will split the house sale prices dataset into a production and a reference dataset which will be saved to a new directory named `datasets`.
 - [`pipeline`](pipeline): a model training script which will use the reference data to create and train a Random Forest Regressor model.
 - [`inference_server`](model_server): a model server that exposes our house price model through a REST API.
 - [`monitoring_server`](monitoring_server): an Evidently model monitoring service which collects inputs and predictions from the model and computes metrics such as data drift.
 - [`scenarios`](scenarios): Two scripts to simulate different scenarios. A scenario where there is no drift in the inputs and a scenario which the input data contains drifted data.
 - [`dashboards`](dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
 - A [`run_demo.py`](run_demo_.py) script to run the demo using docker compose.
-- A docker-compose file to run the whole thing.
+- A [`prepare_demo.py`](prepare_demo.py) script to prepare datasets required for running demo.
+- [`utils`](utils): Folder containing utility scripts for docker and preparing datasets.
 
 # Running locally
 
@@ -68,11 +68,13 @@ From this point, you have the option to continue the demo by following the instr
 
 ## Prepare Demo
 
-All the steps described below can be combined and ran using the command below or individually step by step.
+This step prepares dataset required to run demo. It creates 1 reference and 2 scenarios (drift and no-drift) production datasets inside `datasets` directory. All the steps described below can be combined and ran using the command below or individually step by step.
 
 ```bash
 python prepare_demo.py --download --prepare --train
 ```
+
+To know more about why these dataset are required and how they are generated, please read section **Scenarios** in  [Concepts.md](docs/Concepts.md).
 
 Next, we explain each individual step taken to prepare datasets required for running the demo.
 
@@ -116,7 +118,7 @@ To see the monitoring dashboard in the Grafana interface, click "General" and na
 
 ![No Drift](docs/assets/images/example_no_drift.png)
 
-To stop this scenario, press control+c together. This will act as a Keyboard Interrupt. All the container will still remain running in the background as we did not stop the docker compose application yet.
+To stop this scenario, `press control+c` together. This will act as a Keyboard Interrupt. All the container will still remain running in the background as we did not stop the docker compose application yet.
 
 ### Drift Scenario
 
@@ -132,7 +134,7 @@ Under the same dashboard, the graph will show that there are 2 features that are
 
 ![Drift](docs/assets/images/example_drift.png)
 
-To stop this scenario, press control+c together. This will act as a Keyboard Interrupt. All the container will still remain running in the background as we did not stop the docker compose application yet.
+To stop this scenario, press `control+c` together. This will act as a Keyboard Interrupt. All the container will still remain running in the background as we did not stop the docker compose application yet.
 
 ### Stop demo
 

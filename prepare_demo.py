@@ -1,19 +1,8 @@
+"""Prepare dataset to run demo."""
+import argparse
 import os
 
-import argparse
-
 from config.config import logger
-
-from utils.prepare_data import (
-    download_dataset,
-    preprocess_dataset,
-    create_data_simulator,
-    generate_production_data,
-    generate_production_no_drift_data,
-    generate_production_with_drift_data,
-    generate_reference_data,
-)
-
 from pipeline.train import (
     evaluate,
     model_setup,
@@ -21,24 +10,27 @@ from pipeline.train import (
     save_model,
     train,
 )
+from utils.prepare_data import (
+    create_data_simulator,
+    download_dataset,
+    generate_production_data,
+    generate_production_no_drift_data,
+    generate_production_with_drift_data,
+    generate_reference_data,
+    preprocess_dataset,
+)
 
 
 def get_features(is_train) -> list:
+    """Return list of features.
+
+    Args:
+        is_train (bool): is train use different features if in training mode
+
+    Returns:
+        list: List of features
+    """
     features = [
-        "date",
-        "bedrooms",
-        "bathrooms",
-        "sqft_living",
-        "sqft_lot",
-        "floors",
-        "waterfront",
-        "view",
-        "condition",
-        "grade",
-        "yr_built",
-        "price",
-    ]
-    train_features = [
         "bedrooms",
         "bathrooms",
         "sqft_living",
@@ -50,7 +42,12 @@ def get_features(is_train) -> list:
         "grade",
         "yr_built",
     ]
-    return train_features if is_train else features
+    if is_train:
+        return features
+    else:
+        # add date and price column not used in training
+        features.extend(["date", "price"])
+        return features
 
 
 def create_dir(path_dir: str):
@@ -66,18 +63,21 @@ def create_dir(path_dir: str):
 
 def download_preprocess_data(
     url: str, output_path: str, output_name: str
-) -> None:
+) -> str:
     """Download the dataset using the gdown library and preprocess by the date column to the index.
 
     Args:
         url (str): Path to ggoogle drive shareable link containing dataset
         output_path (str): Path to directory to save dataset
         output_name (str): Name of the dataset
+
+    Returns:
+        str: Path to preprocessed data
     """
     create_dir(output_path)
     output_path = os.path.join(output_path, output_name)
     download_dataset(url, output_path)
-    preprocess_dataset(output_path)
+    return preprocess_dataset(output_path)
 
 
 def prepare(dataset_path: str, save_dir: str, features: str) -> None:
@@ -90,7 +90,6 @@ def prepare(dataset_path: str, save_dir: str, features: str) -> None:
     """
     # create a direectory to save new datasets
     create_dir(save_dir)
-
     logger.info("Generating reference data")
     # select first 1000 rows and select features to get reference dataset from original dataset
     reference_df = generate_reference_data(
@@ -127,7 +126,7 @@ def prepare(dataset_path: str, save_dir: str, features: str) -> None:
     )
 
     logger.info(
-        "A reference and 2 scenarios (drift and no-drift) production datasets are generated"
+        "1 reference and 2 scenarios (drift and no-drift) production datasets are generated"
     )
 
 
@@ -147,7 +146,7 @@ def training(
     """
     save_dir = os.path.dirname(model_save_path)
     create_dir(save_dir)
-
+    # target column
     target = "price"
     x_train, x_test, y_train, y_test = prepare_data(
         data_path=reference_dataset_path,
@@ -192,17 +191,19 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # path to shareable google drive link containing kaggle dataset
     g_drive_url = (
         "https://drive.google.com/uc?id=1YTeSOebJhD2skONp9lJoO6YK6FhxcOd2"
     )
-    output_path = "data"
-    output_name = "housesalesprediction.zip"
-
-    dataset_path = "data/processed_house_data.csv"
-    save_dir = "datasets/house_price_random_forest"
-
+    # path to download dataset
+    data_path = "datasets"
+    file_name = "housesalesprediction.zip"
+    save_dir = f"{data_path}/house_price_random_forest"
+    # path to reference data
     reference_dataset_path = f"{save_dir}/reference.csv"
+    # path and name of ML model to save
     model_save_path = "models/model.pkl"
+    # train test split
     test_size = 0.2
 
     # use portion of all features
@@ -212,7 +213,9 @@ if __name__ == "__main__":
     # download and preprocess dataset
     if args.download:
         logger.info("Downloading dataset from google drive")
-        download_preprocess_data(g_drive_url, output_path, output_name)
+        dataset_path = download_preprocess_data(
+            g_drive_url, data_path, file_name
+        )
     # prepare reference and 2 production datasets required for running demo
     if args.prepare:
         logger.info("Preparing dataset for training and data drift monitoring")

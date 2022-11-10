@@ -1,18 +1,19 @@
 version: '3.7'
 
 volumes:
-    prometheus_data: {}
-    grafana_data: {}
+  prometheus_data: {}
+  grafana_data: {}
 
 networks:
   front-tier:
   back-tier:
 
+
 services:
   evidently_service:
     build:
       context: .
-      dockerfile: monitoring_server/Dockerfile
+      dockerfile: server/monitoring_server/Dockerfile
     depends_on:
       - grafana
     volumes:
@@ -26,7 +27,7 @@ services:
   inference_service:
     build:
       context: .
-      dockerfile: model_server/Dockerfile
+      dockerfile: server/model_server/Dockerfile
     ports:
       - "5050:5050"
     networks:
