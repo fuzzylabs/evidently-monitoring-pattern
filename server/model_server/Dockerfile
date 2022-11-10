@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN pip3 install flask numpy requests scikit-learn
 
-COPY model_server .
+COPY server/model_server .
 
 RUN mkdir models
 
