@@ -106,6 +106,8 @@ In this demo, we will perform ML monitoring using Evidently, Prometheus and Gran
 - [Prometheus](docs/Concepts.md/#prometheus) at port 9090. To access Prometheus web interface, go to your browser and open: <http://localhost:9090/>
 - [Grafana](docs/Concepts.md/#grafana) at port 3000. To access Grafana web interface, go to your browser and open: <http://localhost:3000/>
 
+Click on the individual services to read more about it further.
+
 ### No drift Scenario
 
 Let us first start with a **no-drift scenario**. The reference dataset and no drift dataset have same distribution.
