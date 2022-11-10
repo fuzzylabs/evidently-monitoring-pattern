@@ -75,26 +75,33 @@ The histogram above shows that for the bedroom feature, 7 bedrooms appears much 
 
 ## Inference server
 
-Inference server is basically a flask application that serves the model for inference. Whenever we send a POST request from either of the scenarios from [scnearios](../scenarios/) folder, it reaches this inference server which sends an output, the predicted price of the house.
+[Inference server](../server/model_server/inference_server.py) is basically a flask application that serves the model for inference. Whenever we send a POST request from either of the scenarios from [scnearios](../scenarios/) folder, it reaches this inference server which sends an output, the predicted price of the house.
 
 The [drift scenario](../scenarios/drift.py) sends the data from `production_with_drift.csv` created in previous step. We read each row from the dataset and send a POST request to this inference server.
 
 The same happens in case of [no drift scenario](../scenarios/no_drift.py) as well with only difference being the dataset. In this case, `production_no_drift.csv` also created in previous step is used.
 
-The model endpoint for prediction `http://127.0.0.1:5050/predict`. Once the POST request is sent, the inference server will also send both the predicted prices and features of the input to Evidently metric server. In next section, we will see how the Evidently metric server works and what it does with these metrics.
+The model endpoint for prediction `http://127.0.0.1:5050/predict`. Once the POST request is sent, the inference server will also send both the predicted price and features of the input to Evidently metric server. In next section, we will see how the Evidently metric server works and what it does with these metrics.
 
 ## Evidently server
 
-- The Evidently metric server: this is the Evidently metrics server which will monitor both the inputs and outputs of the inference server to calculate the metrics for data drift.
-To simplify this demo and make it easier to understand what is happening, we are only going to select 2 features from the original dataset
+This section is one of the complex parts of the project. [Evidently metric server](../server/monitoring_server/metric_server.py) is also a flask application that sends various metrics to Prometheus endpoint.
+
+It receives the predicted price and features of input from inference server from previous step. Evidently calculates data drift between reference data and current data which is sent by inference server. The metrics such as "n_features" (number of features), "dataset_drift" and all [different metrics](https://docs.evidentlyai.com/reference/all-metrics#data-drift) calculated using Evidently library are sent to Prometheus endpoint.
+
+This service is exposed at endpoint : <http://localhost:8085/>
 
 ## Prometheus
 
-- Prometheus: once the Evidently monitors have produced some metrics, they will be logged into Prometheus's database as time series data.
+[Prometheus](https://prometheus.io/) is open source monitoring tool that scrapes metrics from HTTP endpoints. This server stores the scraped metrics in a time series DB. The Evidently metric server in previous step sends all different evidently related metrics to this server.
+
+Prometheus endpoint is exposed at <http://localhost:9090/>.
+
+Metrics by themselves won't make sense if we don't create a simple visualization tool to visualize the metrics. This is where Grafana plays a vital role which we discuss in the next section.
 
 ## Grafana
 
-Grafana is open source project that helps creating beatiful dashboards for visualizing different metrics. We can use it to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the [`dashboards`](../dashboards) directory.
+[Grafana](https://grafana.com/) is open source project that helps creating beatiful dashboards for visualizing different metrics. We can use it to visualise the metrics produced by Evidently in real time. A pre-built dashboard for visualising data drift is include in the [`dashboards`](../dashboards) directory.
 
 Once the application is started, you can see the results on Grafana dashboard at <http://localhost:3000/>. The default login credentials are username: admin and password: admin.
 

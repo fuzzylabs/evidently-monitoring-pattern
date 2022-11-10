@@ -101,9 +101,10 @@ Next, we explain each individual step taken to prepare datasets required for run
 
 In this demo, we will perform ML monitoring using Evidently, Prometheus and Granfana using the dataset prepared on last section. We will monitor drift detection in real time. The different services exposed by docker compose application are
 
-- Evidently monitoring service at port 8085
-- Prometheus at port 9090. To access Prometheus web interface, go to your browser and open: <http://localhost:9090/>
-- Grafana at port 3000. To access Grafana web interface, go to your browser and open: <http://localhost:3000/>
+- [Inference server](docs/Concepts.md/#inference-server) at port 5050: <http://localhost:5050/>
+- [Evidently monitoring service](docs/Concepts.md/#evidently-server) at port 8085: <http://localhost:8085/>
+- [Prometheus](docs/Concepts.md/#prometheus) at port 9090. To access Prometheus web interface, go to your browser and open: <http://localhost:9090/>
+- [Grafana](docs/Concepts.md/#grafana) at port 3000. To access Grafana web interface, go to your browser and open: <http://localhost:3000/>
 
 ### No drift Scenario
 
