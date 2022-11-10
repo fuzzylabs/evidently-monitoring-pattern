@@ -50,7 +50,7 @@ def get_features(is_train) -> list:
         "grade",
         "yr_built",
     ]
-    return features if is_train else train_features
+    return train_features if is_train else features
 
 
 def create_dir(path_dir: str):
