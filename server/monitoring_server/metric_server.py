@@ -185,9 +185,6 @@ class MonitoringService:
                 logging.info("Data drift detected")
 
 
-SERVICE: MonitoringService | None = None
-
-
 @app.before_first_request
 def configure_service() -> None:
     """Configure evidently's monitoring service on server start."""
@@ -277,5 +274,6 @@ def iterate(dataset: str) -> str:
 
 
 if __name__ == "__main__":
+    SERVICE: MonitoringService | None = None
     app.run(host="0.0.0.0", port="8085", debug=True)
 # fmt: on
