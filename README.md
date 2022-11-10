@@ -110,7 +110,7 @@ Let us first start with a **no-drift scenario**. The reference dataset and no dr
 python run_demo --no-drift  # press control+c to stop this scenario
 ```
 
-This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together. Once the application is started, you can see the results on Grafana dashboard at <`http://localhost:3000`/>. The default login credentials are username: admin and password: admin.
+This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together. Once the application is started, you can see the results on Grafana dashboard at <http://localhost:3000/>. The default login credentials are username: admin and password: admin.
 
 To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results. The no drift scenario shows that currently there are 2 features and no drift is detected for either of features.
 
@@ -120,7 +120,7 @@ To stop this scenario, press control+c together. This will act as a Keyboard Int
 
 ### Drift Scenario
 
-Let us now start with a **drift scenario**. The reference dataset and drift dataset come from a different distribution. Hence, Evidently library will notice a drift and alert with number of features drifted on the Grafana dashboard.
+Next we start with a **drift scenario**. The reference dataset and drift dataset come from a different distribution. Hence, Evidently library will notice a drift and alert with number of features drifted on the Grafana dashboard.
 
 ```bash
 python run_demo.py --drift  # press control+c to stop this scenario
