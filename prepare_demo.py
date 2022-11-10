@@ -48,8 +48,8 @@ def create_dir(path_dir: str):
         path_dir (str): Path to directory to create
     """
     if not os.path.exists(path_dir):
-        logger.info(f"Creating directory at path: {save_dir}")
-        os.makedirs(save_dir)
+        logger.info(f"Creating directory at path: {path_dir}")
+        os.makedirs(path_dir)
 
 
 def download_preprocess_data(
