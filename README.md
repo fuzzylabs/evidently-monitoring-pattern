@@ -85,13 +85,13 @@ Next, we explain each individual step taken to prepare datasets required for run
     python prepare_demo.py --download
     ```
 
-2. This step will split the dataset into 1 reference and 2 production datasets (with drift data and without drift data). Jump to section on []() to understand the motivation behind these datasets.
+2. This step will split the dataset into 1 reference and 2 production datasets (with drift data and without drift data). Jump to section on [How are the data generated?](docs/Concepts.md/#how-are-the-data-generated) to understand the motivation behind these datasets.
 
     ```bash
     python prepare_demo.py --prepare
     ```
 
-3. Train a Random Forest Regressor. This model will be used by Inference Server (explained [here]()) to make predictions. Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
+3. Train a Random Forest Regressor. This model will be used by Inference Server (explained [here](docs/Concepts.md/#inference-server)) to make predictions. Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
 
     ```bash
     python prepare_demo.py --train
