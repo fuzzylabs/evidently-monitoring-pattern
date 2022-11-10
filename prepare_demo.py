@@ -38,11 +38,19 @@ def get_features(is_train) -> list:
         "yr_built",
         "price",
     ]
-    return (
-        features
-        if is_train
-        else [x for x in features if x not in ("price", "date")]
-    )
+    train_features = [
+        "bedrooms",
+        "bathrooms",
+        "sqft_living",
+        "sqft_lot",
+        "floors",
+        "waterfront",
+        "view",
+        "condition",
+        "grade",
+        "yr_built",
+    ]
+    return features if is_train else train_features
 
 
 def create_dir(path_dir: str):
@@ -206,11 +214,11 @@ if __name__ == "__main__":
         logger.info("Downloading dataset from google drive")
         download_preprocess_data(g_drive_url, output_path, output_name)
     # prepare reference and 2 production datasets required for running demo
-    elif args.prepare:
+    if args.prepare:
         logger.info("Preparing dataset for training and data drift monitoring")
         prepare(dataset_path, save_dir, features)
     # train a random forest regression model for inference server to make requests
-    elif args.train:
+    if args.train:
         logger.info("Training the regression model")
         training(
             reference_dataset_path,
