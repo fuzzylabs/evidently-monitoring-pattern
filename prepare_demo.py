@@ -5,12 +5,12 @@ import argparse
 from config.config import logger
 
 from utils.prepare_data import (
-    download_dataset, 
-    preprocess_dataset, 
-    create_data_simulator, 
-    generate_production_data, 
-    generate_production_no_drift_data, 
-    generate_production_with_drift_data, 
+    download_dataset,
+    preprocess_dataset,
+    create_data_simulator,
+    generate_production_data,
+    generate_production_no_drift_data,
+    generate_production_with_drift_data,
     generate_reference_data,
 )
 
@@ -22,24 +22,62 @@ from pipeline.train import (
     train,
 )
 
-def download(url: str, output_path: str, output_name: str) -> None:
-    """Download the dataset using the gdown library.
+
+def get_features(is_train) -> list:
+    features = [
+        "date",
+        "bedrooms",
+        "bathrooms",
+        "sqft_living",
+        "sqft_lot",
+        "floors",
+        "waterfront",
+        "view",
+        "condition",
+        "grade",
+        "yr_built",
+        "price",
+    ]
+    return features if is_train else features.remove("price", "date")
+
+
+def create_dir(path_dir: str):
+    """Create a directory if it does not exists.
 
     Args:
-        url (str): the link to the dataset on google drive
-        output (str): the name of the file and the output path
+        path_dir (str): Path to directory to create
     """
-    if not os.path.exists(output_path):
-        logger.info(f"Creating directory at path: {output_path} to save dataset downloaded")
-        os.makedirs(output_path)
+    if not os.path.exists(path_dir):
+        logger.info(f"Creating directory at path: {save_dir}")
+        os.makedirs(save_dir)
+
+
+def download_preprocess_data(
+    url: str, output_path: str, output_name: str
+) -> None:
+    """Download the dataset using the gdown library and preprocess by the date column to the index.
+
+    Args:
+        url (str): Path to ggoogle drive shareable link containing dataset
+        output_path (str): Path to directory to save dataset
+        output_name (str): Name of the dataset
+    """
+    create_dir(output_path)
     output_path = os.path.join(output_path, output_name)
     download_dataset(url, output_path)
     preprocess_dataset(output_path)
 
-def prepare(dataset_path:str, save_dir: str, features: str) -> None:
-    if not os.path.exists(save_dir):
-        logger.info(f"Creating directory at path: {save_dir}")
-        os.makedirs(save_dir)
+
+def prepare(dataset_path: str, save_dir: str, features: str) -> None:
+    """Create reference and 2 production datasets required for running demo
+
+    Args:
+        dataset_path (str): path to dataset csv
+        save_dir (str): path to save new dataset
+        features (str): features to use
+    """
+    # create a direectory to save new datasets
+    create_dir(save_dir)
 
     logger.info("Generating reference data")
     # select first 1000 rows and select features to get reference dataset from original dataset
@@ -80,19 +118,31 @@ def prepare(dataset_path:str, save_dir: str, features: str) -> None:
         "A reference and 2 scenarios (drift and no-drift) production datasets are generated"
     )
 
-def training(reference_dataset_path: str, model_save_path: str, features: list, test_size: float):
-    save_dir = os.path.dirname(model_save_path)
 
-    if not os.path.exists(save_dir):
-        logger.info(f"Creating directory at path: {save_dir} to store models")
-        os.makedirs(save_dir)
+def training(
+    reference_dataset_path: str,
+    model_save_path: str,
+    features: list,
+    test_size: float,
+):
+    """Train a random forest regression model using the reference dataset.
+
+    Args:
+        reference_dataset_path (str): Path to reference data csv
+        model_save_path (str): Path to save the trained model
+        features (list): List of features to use for training
+        test_size (float): split ratio to split dataset into train and test datasets
+    """
+    save_dir = os.path.dirname(model_save_path)
+    create_dir(save_dir)
 
     target = "price"
-    
     x_train, x_test, y_train, y_test = prepare_data(
-        reference_dataset_path, features, target, test_size
+        data_path=reference_dataset_path,
+        features=features,
+        target=target,
+        test_size=test_size,
     )
-
     # Create a random forest regressor using sklearn
     model = model_setup()
     # Fit the model
@@ -130,54 +180,37 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    g_drive_url = "https://drive.google.com/uc?id=1YTeSOebJhD2skONp9lJoO6YK6FhxcOd2"
+    g_drive_url = (
+        "https://drive.google.com/uc?id=1YTeSOebJhD2skONp9lJoO6YK6FhxcOd2"
+    )
     output_path = "data"
     output_name = "housesalesprediction.zip"
 
     dataset_path = "data/processed_house_data.csv"
     save_dir = "datasets/house_price_random_forest"
-    # use portion of all features
-    features = [
-        "date",
-        "bedrooms",
-        "bathrooms",
-        "sqft_living",
-        "sqft_lot",
-        "floors",
-        "waterfront",
-        "view",
-        "condition",
-        "grade",
-        "yr_built",
-        "price",
-    ]
 
-    train_features = [
-        "bedrooms",
-        "bathrooms",
-        "sqft_living",
-        "sqft_lot",
-        "floors",
-        "waterfront",
-        "view",
-        "condition",
-        "grade",
-        "yr_built",
-    ]
-
-    reference_dataset_path = "datasets/house_price_random_forest/reference.csv"
+    reference_dataset_path = f"{save_dir}/reference.csv"
     model_save_path = "models/model.pkl"
     test_size = 0.2
-    
-    try:
-        if args.download:
-            logger.info("Downloading dataset from google drive")
-            download(g_drive_url, output_path, output_name)
-        elif args.prepare:
-            logger.info("Preparing dataset for training and data drift monitoring")
-            prepare(dataset_path, save_dir, features)
-        elif args.train:
-            logger.info("Training the regression model")
-            training(reference_dataset_path, model_save_path, train_features, test_size)
-    except KeyboardInterrupt:
-        logger.info("Interrupt detected")
+
+    # use portion of all features
+    features = get_features(is_train=False)
+    train_features = get_features(is_train=True)
+
+    # download and preprocess dataset
+    if args.download:
+        logger.info("Downloading dataset from google drive")
+        download_preprocess_data(g_drive_url, output_path, output_name)
+    # prepare reference and 2 production datasets required for running demo
+    elif args.prepare:
+        logger.info("Preparing dataset for training and data drift monitoring")
+        prepare(dataset_path, save_dir, features)
+    # train a random forest regression model for inference server to make requests
+    elif args.train:
+        logger.info("Training the regression model")
+        training(
+            reference_dataset_path,
+            model_save_path,
+            train_features,
+            test_size,
+        )
