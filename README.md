@@ -74,7 +74,7 @@ This step prepares dataset required to run demo. It creates 1 reference and 2 sc
 python prepare_demo.py --download --prepare --train
 ```
 
-To know more about why these dataset are required and how they are generated, please read section **Scenarios** in  [Concepts.md](docs/Concepts.md).
+To know more in detail each of the step below, please read section [Scenarios](docs/Concepts.md/#scenarios) in  [Concepts.md](docs/Concepts.md).
 
 Next, we explain each individual step taken to prepare datasets required for running the demo.
 

@@ -18,6 +18,8 @@ This demo makes use of the Kaggle dataset [House Sales in King County, USA](http
 
 ### How are the data generated?
 
+This section will help you understand the motivation behind creating 1 reference and 2 production datasets.
+
 - Download and Preprocess data Step
 
     ```bash
