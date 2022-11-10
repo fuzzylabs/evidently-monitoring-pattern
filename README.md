@@ -29,6 +29,7 @@ Within the repo, you will find:
 - [`run_demo.py`](run_demo.py) script to run the demo using docker compose.
 - [`prepare_demo.py`](prepare_demo.py) script to prepare datasets required for running demo.
 - [`utils`](utils): Folder containing utility scripts for docker and preparing datasets.
+- [`notebook`](notebook): Folder containing Jupyter Notebook for running the demo.
 
 # Running locally
 
@@ -143,6 +144,8 @@ To stop the demo, we need to stop the docker compose application. This can be do
 ```bash
 python run_demo.py --stop
 ```
+
+To understand how all these services work together, please refer to [Concepts](docs/Concepts.md) document.
 
 ## Conclusion
 

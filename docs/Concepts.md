@@ -31,7 +31,7 @@ This section will help you understand the motivation behind creating 1 reference
     python prepare_demo.py --download
     ```
 
-    This step downlaods the Kaggle dataset as a zip file "housesalesprediction.zip" inside `datasets` folder. The downloaded zip file will be extracted as "kc_house_data.csv". Finally, to help Evidently to process the input data, the `date` column of `kc_house_data.csv` will be converted to a pandas datetime object and a new dataset will be saved as `processed_house_data.csv` inside the same folder.
+    This step downlaods the Kaggle dataset as a zip file `housesalesprediction.zip` inside `datasets` folder. The downloaded zip file will be extracted as `kc_house_data.csv`. Finally, to help Evidently to process the input data, the `date` column of `kc_house_data.csv` will be converted to a pandas datetime object and a new dataset will be saved as `processed_house_data.csv` inside the same folder.
 
 - Prepare datasets step
 
@@ -75,7 +75,13 @@ The histogram above shows that for the bedroom feature, 7 bedrooms appears much 
 
 ## Inference server
 
-- This is a model server that will return a price prediction when a request is sent to the server. The request would consists of the features of a house such as the number of bedrooms, etc... After a prediction is made by the model, the server would send the predictions along with the features to the metric server.
+Inference server is basically a flask application that serves the model for inference. Whenever we send a POST request from either of the scenarios from [scnearios](../scenarios/) folder, it reaches this inference server which sends an output, the predicted price of the house.
+
+The [drift scenario](../scenarios/drift.py) sends the data from `production_with_drift.csv` created in previous step. We read each row from the dataset and send a POST request to this inference server.
+
+The same happens in case of [no drift scenario](../scenarios/no_drift.py) as well with only difference being the dataset. In this case, `production_no_drift.csv` also created in previous step is used.
+
+The model endpoint for prediction `http://127.0.0.1:5050/predict`. Once the POST request is sent, the inference server will also send both the predicted prices and features of the input to Evidently metric server. In next section, we will see how the Evidently metric server works and what it does with these metrics.
 
 ## Evidently server
 
@@ -106,4 +112,4 @@ When the no data drift scenario is running, the Grafana's dashboard should show 
 
 ![Drift](assets/images/Data_Drift.png)
 
-- When the data drift scenario is running, Grafana's dashboard should show data drift at a relatively constant time frame, e.g. no data drift for 10 seconds -> data drift detected for 5 seconds -> no data drift for 10 seconds etc...
+The drift scenarios show that both the features are drifted.
