@@ -40,10 +40,15 @@
       },
       "id": 14,
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "# Evidently Data Drift Monitoring\n\n  This is a dashboard to visualise data drift. The dashboard queries data from Promethus and display them in this Grafana dashboard.\n",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.4",
       "targets": [
         {
           "datasource": {
@@ -317,7 +322,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.4",
       "targets": [
         {
           "datasource": {
@@ -389,7 +394,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.4",
       "targets": [
         {
           "datasource": {
@@ -555,7 +560,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "Evidently:data_drift:p_value{dataset_name=\"house_price_random_forest\"}",
+          "expr": "Evidently:data_drift:value",
           "interval": "",
           "legendFormat": "{{feature}}",
           "range": true,
