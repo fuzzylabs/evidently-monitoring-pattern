@@ -1,8 +1,11 @@
-"""Generate reference and production dataset with 2 scenarios (drift/no-drift) for data monitoring."""
+"""Download and generate reference and production dataset with 2 scenarios (drift/no-drift) for data monitoring."""
 import logging
 import os
+import zipfile
 
 import pandas as pd
+
+import gdown
 
 from .prob_distribution import ProbDistribution
 
@@ -197,3 +200,43 @@ def generate_production_with_drift_data(
     production_df.to_csv(save_path, index=False)
     logging.info(f"Saved production data with drift at path: {save_path}")
     return production_df
+
+def download_dataset(url: str, output: str) -> None:
+    """Download the dataset using the gdown library.
+
+    Args:
+        url (str): the link to the dataset on google drive
+        output (str): the name of the file and the output path
+    """
+    logging.info("Downloading house pricing data from google drive")
+    # Download the dataset using gdown library
+    gdown.download(url, output, quiet=False)
+
+
+def preprocess_dataset(dataset_path: str) -> None:
+    """Unzip dataset and set the date column as index and saves the dataset as csv.
+
+    Args:
+        dataset_path (str): the path to the downloaded zip dataset file
+    """
+    # Extract dataset
+    logging.info("Extracting dataset zip file")
+    with zipfile.ZipFile(dataset_path, "r") as zip_ref:
+        zip_ref.extractall("data")
+
+    logging.info(f"Downloaded dataset at path: {dataset_path}")
+    logging.info("Processing data...")
+
+    root_dir = os.path.dirname(dataset_path)
+    filename = "kc_house_data.csv"
+    # Read data
+    house_data = pd.read_csv(os.path.join(root_dir, filename))
+    # Convert to datetime using pandas
+    house_data["date"] = pd.to_datetime(house_data["date"])
+    # Set date column as index
+    house_data.set_index("date", inplace=True)
+    # Save as new dataset
+    new_filename = "processed_house_data.csv"
+    save_path = os.path.join(root_dir, new_filename)
+    house_data.to_csv(save_path)
+    logging.info(f"Saved processed dataset at path: {save_path}")
