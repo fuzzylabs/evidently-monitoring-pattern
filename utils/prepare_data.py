@@ -3,8 +3,8 @@ import logging
 import os
 import zipfile
 
-import gdown
 import pandas as pd
+from kaggle.api.kaggle_api_extended import KaggleApi
 
 from .prob_distribution import ProbDistribution
 
@@ -206,16 +206,29 @@ def generate_production_with_drift_data(
     return production_df
 
 
-def download_dataset(url: str, output: str) -> None:
-    """Download the dataset using the gdown library.
+def download_dataset(api: KaggleApi(), output: str) -> None:
+    """Download the dataset using the Kaggle API.
 
     Args:
-        url (str): the link to the dataset on google drive
-        output (str): the name of the file and the output path
+        api (KaggleApi): Kaggle API object
+        output (str): the name of the folder to download the data into
     """
-    logging.info("Downloading house pricing data from google drive")
-    # Download the dataset using gdown library
-    gdown.download(url, output, quiet=False)
+    logging.info("Downloading house pricing data from Kaggle")
+    # Download the dataset using Kaggle API
+    api.dataset_download_files("harlfoxem/housesalesprediction", path=output)
+
+
+def authenticate_api() -> KaggleApi():
+    """Authenticate the Kaggle API with your set environment username and token.
+
+    Returns:
+        KaggleApi: the authenticated API object.
+    """
+    api = KaggleApi()
+    logging.info("Authenticating API keys")
+    api.authenticate()
+    logging.info("Keys authenticated")
+    return api
 
 
 def preprocess_dataset(dataset_path: str) -> str:
