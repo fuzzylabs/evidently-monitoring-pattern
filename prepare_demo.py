@@ -199,6 +199,7 @@ if __name__ == "__main__":
     data_path = "datasets"
     file_name = "housesalesprediction.zip"
     save_dir = f"{data_path}/house_price_random_forest"
+    preproces_dataset_path = f"{data_path}/processed_house_data.csv"
     # path to reference data
     reference_dataset_path = f"{save_dir}/reference.csv"
     # path and name of ML model to save
@@ -213,13 +214,13 @@ if __name__ == "__main__":
     # download and preprocess dataset
     if args.download:
         logger.info("Downloading dataset from google drive")
-        dataset_path = download_preprocess_data(
+        preproces_dataset_path = download_preprocess_data(
             g_drive_url, data_path, file_name
         )
     # prepare reference and 2 production datasets required for running demo
     if args.prepare:
         logger.info("Preparing dataset for training and data drift monitoring")
-        prepare(dataset_path, save_dir, features)
+        prepare(preproces_dataset_path, save_dir, features)
     # train a random forest regression model for inference server to make requests
     if args.train:
         logger.info("Training the regression model")
