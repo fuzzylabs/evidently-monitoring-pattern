@@ -124,7 +124,11 @@ This will start a docker compose application in the background that runs all the
 
 
 
-To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results. The no drift scenario shows that currently there are 2 features and no drift is detected for either of features.
+To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results.
+
+![Dashboard-location](docs/assets/images/grafana_dashboard_location.png)
+
+The no drift scenario shows that currently there are 2 features and no drift is detected for either of features:
 
 ![No Drift](docs/assets/images/example_no_drift.png)
 
