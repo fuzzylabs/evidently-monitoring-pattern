@@ -81,7 +81,7 @@ def download_preprocess_data(
 
 
 def prepare(dataset_path: str, save_dir: str, features: str) -> None:
-    """Create reference and 2 production datasets required for running demo
+    """Create reference and 2 production datasets required for running demo.
 
     Args:
         dataset_path (str): path to dataset csv
@@ -167,13 +167,6 @@ def training(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Script for running drift/no-drift demo"
-    )
-    parser.add_argument(
-        "-d",
-        "--download",
-        default=False,
-        action="store_true",
-        help="Download dataset from google drive",
     )
     parser.add_argument(
         "-p",
