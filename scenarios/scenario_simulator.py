@@ -8,16 +8,17 @@ import pandas as pd
 import requests
 
 
-def request_drift_prediction(sleep_timeout: int, model_server_url: str) -> None:
+def request_drift_prediction(
+    sleep_timeout: int, model_server_url: str, dataset_path: str
+) -> None:
     """Send an instance from the production_with_drift.csv to the inference server after each sleep time out.
 
     Args:
         sleep_timeout (int): seconds to wait before requesting the next row for inference
         model_server_url (str): the address of the inference server
+        dataset_path (str): the path for the production dataset to use
     """
-    dataset_path = (
-        "datasets/house_price_random_forest/production_with_drift.csv"
-    )
+    dataset_path = dataset_path
 
     dataset = pd.read_csv(dataset_path)
 
@@ -43,6 +44,22 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "-no-d",
+        "--no-drift",
+        default=False,
+        action="store_true",
+        help="Simulate a scenario with no drift",
+    )
+
+    parser.add_argument(
+        "-d",
+        "--drift",
+        default=False,
+        action="store_true",
+        help="Simulate a scenario with drift",
+    )
+
+    parser.add_argument(
         "-t",
         "--timeout",
         type=float,
@@ -64,5 +81,18 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    model_server_url = "http://127.0.0.1:5050/predict"
-    request_drift_prediction(args.timeout, model_server_url)
+    model_server_url = "http://inference_service:5050/predict"
+    if args.no_drift:
+        dataset_path = (
+            "datasets/house_price_random_forest/production_with_drift.csv"
+        )
+        logging.info("Sending non drifted data")
+        logging.info("Visit http://localhost:3000/ for Grafana dashboard")
+        request_drift_prediction(args.timeout, model_server_url, dataset_path)
+    elif args.drift:
+        dataset_path = (
+            "datasets/house_price_random_forest/production_no_drift.csv"
+        )
+        logging.info("Sending drifted data")
+        logging.info("Visit http://localhost:3000/ for Grafana dashboard")
+        request_drift_prediction(args.timeout, model_server_url, dataset_path)
