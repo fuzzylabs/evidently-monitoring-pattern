@@ -10,7 +10,7 @@ from pipeline.train import (
     save_model,
     train,
 )
-from utils.prepare_data import (
+from src.prepare_data import (
     authenticate_api,
     create_data_simulator,
     download_dataset,
