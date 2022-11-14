@@ -136,17 +136,34 @@ In this demo, we will perform ML monitoring using Evidently, Prometheus and Gran
 
 Click on the individual services to read more about it further.
 
+To run the 4 services using docker, run
+
+```
+docker compose up --build
+```
+
+This will build and start a docker compose application in the background that runs all the tools and services. Including the model server, Evidently, Prometheus and Grafana.
+
 ### No drift Scenario
 
 Let us first start with a **no-drift scenario**. The reference dataset and no drift dataset have same distribution.
 
+On a separate terminal, run
+
 ```bash
-python run_demo.py --no-drift  # press control+c to stop this scenario
+docker compose run --rm --no-deps --service-ports scenario_runner --no-drift
+# press control+c to stop this scenario
 ```
 
-This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together. Once the application is started, you can see the results on Grafana dashboard at <http://localhost:3000/>. The default login credentials are username: admin and password: admin.
+ Once the no drift scenario is started, we can see the results on Grafana dashboard at <http://localhost:3000/>.
 
-To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results. The no drift scenario shows that currently there are 2 features and no drift is detected for either of features.
+> ### **_NOTE:_**  The default login credentials for Grafana are **username: "_admin_"** and **password: "_admin_"**.
+
+To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results.
+
+![Dashboard-location](docs/assets/images/grafana_dashboard_location.png)
+
+The no drift scenario shows that currently there are 2 features and no drift is detected for either of features:
 
 ![No Drift](docs/assets/images/example_no_drift.png)
 
@@ -157,7 +174,8 @@ To stop this scenario, press `control+c` together. This will act as a Keyboard I
 Next we start with a **drift scenario**. The reference dataset and drift dataset come from a different distribution. Hence, Evidently library will notice a drift and alert with number of features drifted on the Grafana dashboard.
 
 ```bash
-python run_demo.py --drift  # press control+c to stop this scenario
+docker compose run --rm --no-deps --service-ports scenario_runner --drift
+# press control+c to stop this scenario
 ```
 
 This will use the already running container for Evidently, Prometheus and Grafana. The drift detection results will be shown on Grafana dashboard at <http://localhost:3000>.
@@ -173,7 +191,7 @@ To stop this scenario, press `control+c` together. This will act as a Keyboard I
 To stop the demo, we need to stop the docker compose application. This can be done by running the following command. This will stop docker compose application and remove the all the containers.
 
 ```bash
-python run_demo.py --stop
+docker compose down
 ```
 
 To understand how all these services work together, please refer to [Concepts](docs/Concepts.md) document.
