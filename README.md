@@ -129,6 +129,7 @@ docker compose run --rm --no-deps --service-ports scenario_runner --no-drift
 # press control+c to stop this scenario
 ```
 
+<<<<<<< HEAD
  Once the no drift scenario is started, we can see the results on Grafana dashboard at <http://localhost:3000/>.
 
 > ### **_NOTE:_**  The default login credentials for Grafana are **username: "_admin_"** and **password: "_admin_"**.
@@ -137,6 +138,18 @@ To see the monitoring dashboard in the Grafana interface, click "General" and na
 
 ![Dashboard-location](docs/assets/images/grafana_dashboard_location.png)
 
+=======
+This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together. Once the application is started, you can see the results on Grafana dashboard at <http://localhost:3000/>.
+
+> ### **_NOTE:_**  The default login credentials for Grafana are **username: "_admin_"** and **password: "_admin_"**.
+
+
+
+To see the monitoring dashboard in the Grafana interface, click "General" and navigate to the chosen dashboard (e.g. "Evidently Drift Monitoring"). Under the dashboard, you will see a graph that shows the drift detection results.
+
+![Dashboard-location](docs/assets/images/grafana_dashboard_location.png)
+
+>>>>>>> 885c1bd4bc48d12d15679bc12e57aa7c94a797d5
 The no drift scenario shows that currently there are 2 features and no drift is detected for either of features:
 
 ![No Drift](docs/assets/images/example_no_drift.png)
