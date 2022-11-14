@@ -12,6 +12,7 @@ This repository is a complete demo of real-time data monitoring using Evidently.
   - [Getting started](#getting-started)
   - [Jupyter Notebook](#jupyter-notebook)
   - [Prepare Demo](#prepare-demo)
+    - [Download data for the model](#download-data-for-the-model)
   - [Run demo](#run-demo)
     - [No drift Scenario](#no-drift-scenario)
     - [Drift Scenario](#drift-scenario)
@@ -67,7 +68,7 @@ You'll need following pre-requisites to run the demo:
 
 ## Jupyter Notebook
 
-From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](notebooks/demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explaination as we go through each steps.
+From this point, you have the option to continue the demo by following the instructions below or you continue this demo with [`demo.ipynb`](notebook/demo.ipynb) (included in this repo) using Jupyter Notebook. The notebook will provide an breif explaination as we go through each steps.
 
 ## Prepare Demo
 
@@ -79,21 +80,46 @@ python prepare_demo.py --download --prepare --train
 
 To know more in detail each of the step below, please read section [Scenarios](docs/Concepts.md/#scenarios) in  [Concepts.md](docs/Concepts.md).
 
-Next, we explain each individual step taken to prepare datasets required for running the demo.
+Next, we explain each individual step taken to prepare the datasets required for running the demo.
 
-1. This step will download and preprocess the data from Google drive.
+### Download data for the model
+
+NOTE: If you already have Kaggle API token set up on your machine, you can skip step 1 and go to step 2.
+
+1. **Get and set up Kaggle API token:**
+
+- Go to [Kaggle](https://www.kaggle.com) to log in or create an account.
+- Get into your account settings page.
+- Under the API section, click on `create a new API token`.
+- This will prompt you to download the `.json` file into your system.
+- You can either export your Kaggle username and token to the environment. Open the file, copy the username and key and:
+
+```bash
+export set KAGGLE_USERNAME=<your-kaggle-username>
+export set KAGGLE_KEY=<your-kaggle-api-key>
+```
+
+- Or move the downloaded `kaggle.json` file:
+
+```bash
+mv ~/Downloads/kaggle.json ~/.kaggle/kaggle.json
+```
+
+2. This step will download and preprocess the data from Kaggle. The API username and key must be set up for this to work.
 
     ```bash
     python prepare_demo.py --download
     ```
 
-2. This step will split the dataset into 1 reference and 2 production datasets (with drift data and without drift data). Jump to section on [How are the data generated?](docs/Concepts.md/#how-are-the-data-generated) to understand the motivation behind these datasets.
+This will download and save the data from Kaggle.
+
+3. This step will split the dataset into 1 reference and 2 production datasets (with drift data and without drift data). Jump to section on [How are the data generated?](docs/Concepts.md/#how-are-the-data-generated) to understand the motivation behind these datasets.
 
     ```bash
     python prepare_demo.py --prepare
     ```
 
-3. Train a Random Forest Regressor. This model will be used by Inference Server (explained [here](docs/Concepts.md/#inference-server)) to make predictions. Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
+4. Train a Random Forest Regressor. This model will be used by Inference Server (explained [here](docs/Concepts.md/#inference-server)) to make predictions. Once the model is trained, it will be saved as `model.pkl` inside the `models` folder.
 
     ```bash
     python prepare_demo.py --train
