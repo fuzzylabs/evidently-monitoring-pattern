@@ -30,7 +30,7 @@ Within the repo, you will find:
 - [`dashboards`](dashboards): a data drift monitoring dashboard which uses Prometheus and Grafana to visualise Evidently's monitoring metrics in real-time.
 - [`run_demo.py`](run_demo.py) script to run the demo using docker compose.
 - [`prepare_demo.py`](prepare_demo.py) script to prepare datasets required for running demo.
-- [`utils`](utils): Folder containing utility scripts for docker and preparing datasets.
+- [`src`](src): Folder containing utility scripts for docker and preparing datasets.
 - [`notebook`](notebook): Folder containing Jupyter Notebook for running the demo.
 
 # Running locally
