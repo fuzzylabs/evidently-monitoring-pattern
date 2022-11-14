@@ -122,7 +122,7 @@ This will build and start a docker compose application in the background that ru
 
 Let us first start with a **no-drift scenario**. The reference dataset and no drift dataset have same distribution.
 
-On a new terminal, run
+On a separate terminal, run
 
 ```bash
 docker compose run --rm --no-deps --service-ports scenario_runner --no-drift
