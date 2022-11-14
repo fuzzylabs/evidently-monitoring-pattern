@@ -113,18 +113,19 @@ Click on the individual services to read more about it further.
 To run the 4 services using docker, run
 
 ```
-docker compose build
-docker compose up -d
+docker compose up --build
 ```
 
-This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together.
+This will build and start a docker compose application in the background that runs all the tools and services. Including the model server, Evidently, Prometheus and Grafana.
 
 ### No drift Scenario
 
 Let us first start with a **no-drift scenario**. The reference dataset and no drift dataset have same distribution.
 
+On a separate terminal, run
+
 ```bash
-docker compose run --rm --service-ports scenario_runner --no-drift
+docker compose run --rm --no-deps --service-ports scenario_runner --no-drift
 # press control+c to stop this scenario
 ```
 
@@ -147,7 +148,7 @@ To stop this scenario, press `control+c` together. This will act as a Keyboard I
 Next we start with a **drift scenario**. The reference dataset and drift dataset come from a different distribution. Hence, Evidently library will notice a drift and alert with number of features drifted on the Grafana dashboard.
 
 ```bash
-docker compose run --rm --service-ports scenario_runner --no-drift
+docker compose run --rm --no-deps --service-ports scenario_runner --drift
 # press control+c to stop this scenario
 ```
 
