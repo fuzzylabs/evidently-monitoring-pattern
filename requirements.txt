@@ -1,8 +1,8 @@
 dataclasses==0.6
 evidently>=0.1.56.dev0
 Flask>=2.0.3
-gdown==4.5.3
 jsonify>=0.5
+kaggle>=1.5.12
 matplotlib==3.6.0
 numpy>=1.19.5
 prometheus-client>=0.14.1

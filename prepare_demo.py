@@ -11,6 +11,7 @@ from pipeline.train import (
     train,
 )
 from src.prepare_data import (
+    authenticate_api,
     create_data_simulator,
     download_dataset,
     generate_production_data,
@@ -64,7 +65,7 @@ def create_dir(path_dir: str):
 def download_preprocess_data(
     url: str, output_path: str, output_name: str
 ) -> str:
-    """Download the dataset using the gdown library and preprocess by the date column to the index.
+    """Download the dataset with the Kaggle API and preprocess by the date column to the index.
 
     Args:
         url (str): Path to ggoogle drive shareable link containing dataset
@@ -75,8 +76,9 @@ def download_preprocess_data(
         str: Path to preprocessed data
     """
     create_dir(output_path)
+    api = authenticate_api()
+    download_dataset(api, output_path)
     output_path = os.path.join(output_path, output_name)
-    download_dataset(url, output_path)
     return preprocess_dataset(output_path)
 
 
@@ -173,7 +175,7 @@ if __name__ == "__main__":
         "--download",
         default=False,
         action="store_true",
-        help="Download dataset from google drive",
+        help="Download dataset from Kaggle",
     )
     parser.add_argument(
         "-p",
