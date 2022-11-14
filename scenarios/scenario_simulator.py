@@ -7,6 +7,12 @@ import time
 import pandas as pd
 import requests
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+
 
 def request_prediction(
     sleep_timeout: int, model_server_url: str, dataset_path: str

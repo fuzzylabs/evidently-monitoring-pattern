@@ -125,7 +125,7 @@ Let us first start with a **no-drift scenario**. The reference dataset and no dr
 On a new terminal, run
 
 ```bash
-docker compose run --rm --service-ports scenario_runner --no-drift
+docker compose run --rm --no-deps --service-ports scenario_runner --no-drift
 # press control+c to stop this scenario
 ```
 
@@ -148,7 +148,7 @@ To stop this scenario, press `control+c` together. This will act as a Keyboard I
 Next we start with a **drift scenario**. The reference dataset and drift dataset come from a different distribution. Hence, Evidently library will notice a drift and alert with number of features drifted on the Grafana dashboard.
 
 ```bash
-docker compose run --rm --service-ports scenario_runner --drift
+docker compose run --rm --no-deps --service-ports scenario_runner --drift
 # press control+c to stop this scenario
 ```
 
