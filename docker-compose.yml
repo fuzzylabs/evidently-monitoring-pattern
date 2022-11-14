@@ -67,3 +67,17 @@ services:
       - back-tier
       - front-tier
     restart: always
+
+  scenario_runner:
+    build:
+      context: .
+      dockerfile: scenarios/Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - back-tier
+      - front-tier
+    depends_on:
+      - "inference_service"
+    profiles:
+      - donotstart

@@ -81,7 +81,7 @@ def download_preprocess_data(
 
 
 def prepare(dataset_path: str, save_dir: str, features: str) -> None:
-    """Create reference and 2 production datasets required for running demo
+    """Create reference and 2 production datasets required for running demo.
 
     Args:
         dataset_path (str): path to dataset csv
