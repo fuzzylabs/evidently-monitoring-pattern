@@ -8,7 +8,7 @@ import pandas as pd
 import requests
 
 
-def request_drift_prediction(
+def request_prediction(
     sleep_timeout: int, model_server_url: str, dataset_path: str
 ) -> None:
     """Send an instance from the production_with_drift.csv to the inference server after each sleep time out.
@@ -18,8 +18,6 @@ def request_drift_prediction(
         model_server_url (str): the address of the inference server
         dataset_path (str): the path for the production dataset to use
     """
-    dataset_path = dataset_path
-
     dataset = pd.read_csv(dataset_path)
 
     for _, row in dataset.iterrows():
@@ -84,15 +82,15 @@ if __name__ == "__main__":
     model_server_url = "http://inference_service:5050/predict"
     if args.no_drift:
         dataset_path = (
-            "datasets/house_price_random_forest/production_with_drift.csv"
+            "datasets/house_price_random_forest/production_no_drift.csv"
         )
         logging.info("Sending non drifted data")
         logging.info("Visit http://localhost:3000/ for Grafana dashboard")
-        request_drift_prediction(args.timeout, model_server_url, dataset_path)
+        request_prediction(args.timeout, model_server_url, dataset_path)
     elif args.drift:
         dataset_path = (
-            "datasets/house_price_random_forest/production_no_drift.csv"
+            "datasets/house_price_random_forest/production_with_drift.csv"
         )
         logging.info("Sending drifted data")
         logging.info("Visit http://localhost:3000/ for Grafana dashboard")
-        request_drift_prediction(args.timeout, model_server_url, dataset_path)
+        request_prediction(args.timeout, model_server_url, dataset_path)
