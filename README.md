@@ -116,7 +116,7 @@ To run the 4 services using docker, run
 docker compose up --build
 ```
 
-This will start a docker compose application in the background that runs all the tools Evidently, Prometheus and Grafana together.
+This will build and start a docker compose application in the background that runs all the tools and services. Including the model server, Evidently, Prometheus and Grafana.
 
 ### No drift Scenario
 
